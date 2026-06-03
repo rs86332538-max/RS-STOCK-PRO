@@ -1,0 +1,1994 @@
+<!-- AI_INFRA_SCANNER v4.0 — HOVEDSERVER — TOP 50 DATA · POWER · INFRASTRUKTUR DETEKTOR -->
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI INFRA SCANNER v4.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#030508;--panel:#070d1a;--border:#112038;
+  --c1:#ff9f1c;--c2:#00e5ff;--c3:#39ff14;
+  --gold:#ffd700;--red:#ff4757;--purple:#a855f7;
+  --pink:#f472b6;--teal:#2dd4bf;--lime:#bef264;
+  --text:#b0cae8;--muted:#3d5570;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;overflow-x:hidden;min-height:100vh;}
+::-webkit-scrollbar{width:4px;height:4px;background:#030508;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── GRID BG ── */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(17,32,56,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(17,32,56,.4) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(3,5,8,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;}
+.nav-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;gap:0;height:52px;overflow-x:auto;}
+.nav-logo{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--c1);letter-spacing:2px;white-space:nowrap;margin-right:28px;}
+.nav-logo span{color:var(--c2);}
+.nav-link{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);padding:0 14px;height:100%;display:flex;align-items:center;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;border-bottom:2px solid transparent;}
+.nav-link:hover,.nav-link.active{color:var(--c2);border-bottom-color:var(--c2);}
+.nav-spacer{flex:1;}
+.live-badge{font-family:'Share Tech Mono',monospace;font-size:9px;color:#666;letter-spacing:1px;white-space:nowrap;}
+.live-badge.on{color:var(--c3);}
+
+/* ── WRAP ── */
+.wrap{max-width:1440px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+/* ── HEADER ── */
+.hero{padding:44px 0 32px;border-bottom:1px solid var(--border);margin-bottom:48px;}
+.sys-tag{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c1);letter-spacing:3px;margin-bottom:10px;opacity:.8;}
+h1{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(22px,4.5vw,58px);letter-spacing:2px;line-height:1;background:linear-gradient(120deg,var(--c1) 0%,#fff 40%,var(--c2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.h1-sub{font-family:'Orbitron',monospace;font-size:clamp(8px,1.2vw,12px);color:var(--c3);letter-spacing:4px;margin-top:8px;}
+.hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;align-items:center;}
+.pill{padding:5px 13px;border-radius:2px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;font-weight:700;}
+.po{background:rgba(255,159,28,.12);border:1px solid rgba(255,159,28,.35);color:var(--c1);}
+.pb{background:rgba(0,229,255,.10);border:1px solid rgba(0,229,255,.30);color:var(--c2);}
+.pg{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.25);color:var(--c3);}
+.pp{background:rgba(168,85,247,.10);border:1px solid rgba(168,85,247,.30);color:var(--purple);}
+.disclaimer{background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.25);border-left:3px solid var(--red);padding:9px 15px;font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(255,71,87,.7);letter-spacing:1px;line-height:1.7;margin-top:16px;}
+
+/* ── SECTION ── */
+.section{margin-bottom:56px;}
+.sec-lbl{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c2);letter-spacing:4px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+h2{font-family:'Orbitron',monospace;font-size:clamp(14px,2vw,20px);font-weight:700;color:#fff;letter-spacing:2px;margin-bottom:22px;}
+
+/* ── MACRO GRID ── */
+.macro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:48px;}
+.mc{background:var(--panel);border:1px solid var(--border);padding:16px 14px;position:relative;overflow:hidden;}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.mc.o::before{background:linear-gradient(90deg,var(--c1),#ffe066);}
+.mc.b::before{background:linear-gradient(90deg,var(--c2),#a0f0ff);}
+.mc.g::before{background:linear-gradient(90deg,var(--c3),#b0ff70);}
+.mc.gd::before{background:linear-gradient(90deg,var(--gold),#fff4a0);}
+.mc.p::before{background:linear-gradient(90deg,var(--purple),#e0aaff);}
+.mc-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.mc-val{font-family:'Orbitron',monospace;font-size:24px;font-weight:700;line-height:1;margin-bottom:4px;}
+.mc-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);line-height:1.5;}
+.macro-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px;}
+.macro-head h2{margin-bottom:0;}
+.macro-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end;}
+.macro-status{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;}
+.macro-live-grid{margin-top:-34px;margin-bottom:48px;}
+.mc.live{border-color:rgba(0,229,255,.28);background:linear-gradient(150deg,rgba(7,13,26,.96),rgba(3,10,12,.92));}
+.mc.live::after{content:'LIVE';position:absolute;right:10px;top:8px;font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(0,229,255,.38);letter-spacing:2px;}
+.mc.live .mc-val{font-size:22px;}
+.mc-live-note{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-top:6px;line-height:1.45;}
+
+/* ── STACK ── */
+.stack{display:flex;flex-direction:column;gap:7px;margin-bottom:40px;}
+.sl{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);padding:11px 16px;position:relative;overflow:hidden;transition:border-color .2s;}
+.sl:hover{border-color:rgba(255,159,28,.35);}
+.sl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.sl1::before{background:var(--c1);}
+.sl2::before{background:var(--pink);}
+.sl3::before{background:var(--c3);}
+.sl4::before{background:var(--purple);}
+.sl5::before{background:var(--gold);}
+.sl-n{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;opacity:.2;min-width:28px;}
+.sl-i{flex:1;}
+.sl-c{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;margin-bottom:2px;}
+.sl-t{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#fff;letter-spacing:1px;}
+.sl-d{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);}
+.sl-tickers{display:flex;flex-wrap:wrap;gap:5px;}
+.stk{font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 7px;border-radius:2px;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.stk:hover{border-color:var(--c2);color:var(--c2);}
+
+/* ── TOP50 RANKING TABLE ── */
+.tw{overflow-x:auto;margin-bottom:40px;}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:960px;}
+th{padding:9px 12px;color:var(--muted);letter-spacing:1.5px;font-size:9px;text-align:right;user-select:none;border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;}
+th.sortable{cursor:pointer;transition:color .2s,background .2s;}
+th.sortable:hover,th.sorted{color:var(--c2);background:rgba(0,229,255,.04);}
+th .sort-ind{display:inline-block;min-width:10px;margin-left:4px;color:var(--c1);}
+th:first-child,th:nth-child(2),th:nth-child(3){text-align:left;}
+td{padding:10px 12px;border-bottom:1px solid rgba(17,32,56,.6);font-variant-numeric:tabular-nums;text-align:right;vertical-align:middle;}
+td:first-child,td:nth-child(2),td:nth-child(3){text-align:left;}
+tr:nth-child(even){background:rgba(7,13,26,.5);}
+tr:hover{background:rgba(0,229,255,.03);}
+.mono{font-family:'Share Tech Mono',monospace;}
+.tag{font-family:'Orbitron',monospace;font-size:8px;padding:3px 7px;border-radius:2px;letter-spacing:1px;font-weight:700;white-space:nowrap;}
+.to{background:rgba(255,159,28,.12);border:1px solid rgba(255,159,28,.35);color:var(--c1);}
+.tb{background:rgba(0,229,255,.10);border:1px solid rgba(0,229,255,.30);color:var(--c2);}
+.tg{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.25);color:var(--c3);}
+.tp{background:rgba(168,85,247,.10);border:1px solid rgba(168,85,247,.30);color:var(--purple);}
+.tpk{background:rgba(244,114,182,.10);border:1px solid rgba(244,114,182,.30);color:var(--pink);}
+.ttl{background:rgba(45,212,191,.10);border:1px solid rgba(45,212,191,.30);color:var(--teal);}
+.tgd{background:rgba(255,215,0,.10);border:1px solid rgba(255,215,0,.30);color:var(--gold);}
+.tlm{background:rgba(190,242,100,.08);border:1px solid rgba(190,242,100,.3);color:var(--lime);}
+.tr{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.3);color:var(--red);}
+.gs{background:rgba(255,159,28,.18);border:1px solid rgba(255,159,28,.5);color:var(--c1);}
+.ga{background:rgba(57,255,20,.10);border:1px solid rgba(57,255,20,.35);color:var(--c3);}
+.gb{background:rgba(0,229,255,.10);border:1px solid rgba(0,229,255,.35);color:var(--c2);}
+.gc{background:rgba(168,85,247,.10);border:1px solid rgba(168,85,247,.35);color:var(--purple);}
+.gd2{background:rgba(255,215,0,.10);border:1px solid rgba(255,215,0,.35);color:var(--gold);}
+.rb-wrap{display:flex;align-items:center;gap:7px;justify-content:flex-end;}
+.rb-track{flex:1;max-width:80px;height:4px;background:rgba(17,32,56,.8);border-radius:2px;overflow:hidden;}
+.rb-fill{height:100%;border-radius:2px;transition:width .3s;}
+.tier-score-controls{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:0 0 14px;}
+.tier-score-field{display:flex;flex-direction:column;gap:5px;min-width:190px;}
+.tier-score-field label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.tier-score-field select{background:#030508;border:1px solid var(--border);color:#e2e8f0;font-family:'Share Tech Mono',monospace;font-size:11px;padding:8px 10px;border-radius:2px;outline:none;}
+.tier-score-field select:focus{border-color:var(--c2);}
+.tier-score-count{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);padding:8px 0;}
+.up{color:var(--c3);}
+.dn{color:var(--red);}
+.w{color:#fff;}
+.o{color:var(--c1);}
+.b{color:var(--c2);}
+.g{color:var(--c3);}
+.p{color:var(--purple);}
+.pk{color:var(--pink);}
+.tl{color:var(--teal);}
+.gd3{color:var(--gold);}
+.lm{color:var(--lime);}
+.r{color:var(--red);}
+
+/* ── CALC GRID ── */
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
+.calc-card{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--c1);padding:18px 20px;}
+.calc-title{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:10px;}
+.calc-formula{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);line-height:1.8;margin-bottom:10px;border-left:2px solid var(--border);padding-left:10px;}
+.calc-result{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;line-height:1.3;}
+.calc-result small{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px;font-weight:400;}
+.calc-live{margin-top:8px;padding:4px 10px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c2);letter-spacing:1px;display:inline-block;}
+
+/* ── TIER CONCLUSION ── */
+.tier-grid{display:flex;flex-direction:column;gap:10px;}
+.tier-row{background:var(--panel);border:1px solid var(--border);padding:14px 18px;display:grid;grid-template-columns:100px 1fr auto;gap:16px;align-items:center;}
+.tier-tickers{font-family:'Share Tech Mono',monospace;font-size:10px;color:#e2e8f0;line-height:1.7;}
+.tier-desc{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);line-height:1.6;}
+.tier-conc{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;text-align:right;}
+
+/* ── PODIUM (TOP8) ── */
+.podium{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:13px;margin-bottom:40px;}
+.pc{background:var(--panel);border:1px solid var(--border);padding:18px 16px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.pc:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(0,0,0,.5);}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.pc-rank{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;opacity:.12;position:absolute;top:8px;right:14px;}
+.pc-tier{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;margin-bottom:4px;}
+.pc-ticker{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:#fff;margin-bottom:2px;}
+.pc-name{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px;}
+.pc-score{font-family:'Orbitron',monospace;font-size:24px;font-weight:700;margin-bottom:2px;}
+.pc-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:2px;}
+.pc-price{font-family:'Share Tech Mono',monospace;font-size:13px;color:#fff;margin-top:8px;}
+.pc-change{font-family:'Share Tech Mono',monospace;font-size:10px;margin-top:2px;}
+.pc-bar{height:3px;background:rgba(17,32,56,.8);margin-top:10px;border-radius:2px;overflow:hidden;}
+.pc-bar-fill{height:100%;border-radius:2px;transition:width .4s;}
+.score-bar{height:4px;background:rgba(17,32,56,.8);margin-top:6px;border-radius:2px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:2px;}
+
+/* ── SEARCH BOX ── */
+.search-section{background:var(--panel);border:1px solid var(--border);border-top:2px solid var(--c2);padding:24px;margin-bottom:40px;}
+.search-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--c2);letter-spacing:2px;margin-bottom:6px;}
+.search-sub{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.search-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;}
+.search-input{flex:1;min-width:260px;background:#030508;border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:12px;padding:10px 14px;border-radius:2px;outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:var(--c2);}
+.search-input::placeholder{color:var(--muted);}
+.btn-search{background:rgba(0,229,255,.12);border:1px solid var(--c2);color:var(--c2);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 20px;cursor:pointer;border-radius:2px;transition:all .2s;white-space:nowrap;}
+.btn-search:hover{background:rgba(0,229,255,.22);}
+.btn-search:disabled{opacity:.4;cursor:default;}
+.btn-ai{background:rgba(255,159,28,.12);border:1px solid var(--c1);color:var(--c1);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 20px;cursor:pointer;border-radius:2px;transition:all .2s;white-space:nowrap;}
+.btn-ai:hover{background:rgba(255,159,28,.22);}
+.btn-ai:disabled{opacity:.4;cursor:default;}
+.search-results{margin-top:16px;}
+.sr-item{display:flex;align-items:center;gap:14px;padding:10px 14px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:border-color .2s;background:#030508;}
+.sr-item:hover{border-color:var(--c2);}
+.sr-ticker{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--c2);min-width:80px;}
+.sr-name{font-family:'Share Tech Mono',monospace;font-size:10px;color:#e2e8f0;flex:1;}
+.sr-exch{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);}
+.sr-add{font-family:'Orbitron',monospace;font-size:9px;padding:4px 10px;border:1px solid var(--c3);color:var(--c3);background:transparent;cursor:pointer;border-radius:2px;white-space:nowrap;}
+.sr-add:hover{background:rgba(57,255,20,.1);}
+.added-tickers{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.added-chip{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.3);padding:5px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c2);}
+.added-chip button{background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;line-height:1;padding:0;}
+.search-msg{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);padding:14px 0;text-align:center;}
+.ai-analysis{background:#030508;border:1px solid var(--border);border-left:3px solid var(--c1);padding:16px;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1.8;color:#e2e8f0;white-space:pre-wrap;}
+.ai-thinking{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c1);animation:pulse 1.5s ease-in-out infinite;padding:14px 0;text-align:center;}
+@keyframes pulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+/* ── LIVE TABLE STATUS ── */
+.live-status{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:10px;}
+.live-status.on{color:var(--c3);}
+
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;line-height:2;}
+
+/* responsive */
+@media(max-width:700px){
+  .tier-row{grid-template-columns:1fr;}
+  .tier-conc{text-align:left;}
+  h1{font-size:28px;}
+}
+
+/* ── SETTINGS PANEL ── */
+.settings-toggle{position:fixed;bottom:24px;right:24px;z-index:200;background:var(--panel);border:1px solid var(--c1);color:var(--c1);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 16px;cursor:pointer;border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.settings-toggle:hover{background:rgba(255,159,28,.15);}
+.settings-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;}
+.settings-overlay.open{display:flex;}
+.settings-box{background:#070d1a;border:1px solid var(--border);border-top:3px solid var(--c1);padding:32px 36px;width:100%;max-width:560px;position:relative;}
+.settings-close{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;font-family:monospace;}
+.settings-close:hover{color:#fff;}
+.settings-h{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--c1);letter-spacing:2px;margin-bottom:6px;}
+.settings-sub{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:24px;line-height:1.7;}
+.settings-field{margin-bottom:18px;}
+.settings-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c2);letter-spacing:2px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.settings-label .status{font-size:9px;padding:2px 8px;border-radius:2px;}
+.status-ok{background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.3);color:var(--c3);}
+.status-no{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.25);color:var(--red);}
+.settings-input{width:100%;background:#030508;border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:11px;padding:10px 14px;border-radius:2px;outline:none;transition:border-color .2s;}
+.settings-input:focus{border-color:var(--c1);}
+.settings-input::placeholder{color:var(--muted);}
+.btn-save-keys{background:rgba(255,159,28,.12);border:1px solid var(--c1);color:var(--c1);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 24px;cursor:pointer;border-radius:2px;transition:all .2s;width:100%;}
+.btn-save-keys:hover{background:rgba(255,159,28,.25);}
+.settings-msg{font-family:'Share Tech Mono',monospace;font-size:10px;margin-top:10px;text-align:center;min-height:16px;}
+.rate-bar-wrap{display:flex;align-items:center;gap:10px;margin-top:12px;}
+.rate-bar-track{flex:1;height:6px;background:rgba(17,32,56,.8);border-radius:3px;overflow:hidden;}
+.rate-bar-fill{height:100%;border-radius:3px;background:var(--c3);transition:width .4s;}
+.rate-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);white-space:nowrap;}
+
+
+/* ── SETTINGS PANEL ── */
+.settings-toggle{position:fixed;bottom:24px;right:24px;z-index:200;background:var(--panel);border:1px solid var(--c1);color:var(--c1);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 16px;cursor:pointer;border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.settings-toggle:hover{background:rgba(255,159,28,.15);}
+.settings-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center;}
+.settings-overlay.open{display:flex;}
+.settings-box{background:#070d1a;border:1px solid var(--border);border-top:3px solid var(--c1);padding:32px 36px;width:100%;max-width:560px;position:relative;max-height:90vh;overflow-y:auto;}
+.settings-close{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;font-family:monospace;line-height:1;}
+.settings-close:hover{color:#fff;}
+.settings-h{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--c1);letter-spacing:2px;margin-bottom:6px;}
+.settings-sub{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:24px;line-height:1.8;}
+.settings-field{margin-bottom:18px;}
+.settings-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c2);letter-spacing:2px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.st-badge{font-size:9px;padding:2px 8px;border-radius:2px;}
+.st-ok{background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.3);color:var(--c3);}
+.st-no{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.25);color:var(--red);}
+.settings-input{width:100%;background:#030508;border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:11px;padding:10px 14px;border-radius:2px;outline:none;transition:border-color .2s;}
+.settings-input:focus{border-color:var(--c1);}
+.settings-input::placeholder{color:var(--muted);}
+.btn-save-keys{background:rgba(255,159,28,.12);border:1px solid var(--c1);color:var(--c1);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 24px;cursor:pointer;border-radius:2px;transition:all .2s;width:100%;margin-top:4px;}
+.btn-save-keys:hover{background:rgba(255,159,28,.25);}
+.settings-msg{font-family:'Share Tech Mono',monospace;font-size:10px;margin-top:12px;text-align:center;min-height:18px;}
+.rate-wrap{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.rate-track{flex:1;height:6px;background:rgba(17,32,56,.8);border-radius:3px;overflow:hidden;}
+.rate-fill{height:100%;border-radius:3px;background:var(--c3);transition:width .4s;}
+.rate-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);white-space:nowrap;}
+
+
+/* ── TRADINGVIEW MODAL ── */
+.tv-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center;}
+.tv-overlay.open{display:flex;}
+.tv-box{background:#070d1a;border:1px solid var(--border);border-top:3px solid var(--c2);width:min(1100px,98vw);height:min(700px,95vh);display:flex;flex-direction:column;position:relative;}
+.tv-header{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.tv-ticker-label{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:var(--c2);}
+.tv-name-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);flex:1;}
+.tv-price-label{font-family:'Share Tech Mono',monospace;font-size:13px;color:#fff;}
+.tv-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;padding:0 4px;}
+.tv-close:hover{color:#fff;}
+.tv-indicators{display:flex;gap:6px;padding:8px 18px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
+.tv-ind-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 9px;border-radius:2px;letter-spacing:1px;}
+.tv-ind-rsi{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:var(--purple);}
+.tv-ind-macd{background:rgba(0,229,255,.10);border:1px solid rgba(0,229,255,.35);color:var(--c2);}
+.tv-ind-roc{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.3);color:var(--c3);}
+.tv-ind-vol{background:rgba(255,159,28,.10);border:1px solid rgba(255,159,28,.3);color:var(--c1);}
+.tv-frame-wrap{flex:1;overflow:hidden;position:relative;}
+.tv-frame-wrap iframe{width:100%;height:100%;border:none;}
+.tv-new-badge{background:rgba(57,255,20,.12);border:1px solid rgba(57,255,20,.35);color:var(--c3);font-family:'Orbitron',monospace;font-size:8px;padding:2px 7px;border-radius:2px;letter-spacing:1px;}
+
+
+.btn-refresh{background:rgba(0,229,255,.1);border:1px solid var(--c2);color:var(--c2);font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:5px 12px;cursor:pointer;border-radius:2px;transition:all .2s;white-space:nowrap;margin-left:10px;}
+.btn-refresh:hover{background:rgba(0,229,255,.22);}
+.btn-refresh.spinning{opacity:.6;cursor:default;}
+
+/* Host shell: AIINFRA.SCAN embedded page */
+body{background:radial-gradient(circle at top left,rgba(255,215,106,.08),transparent 30%),#050507;}
+nav{border-bottom-color:rgba(255,215,106,.18);}
+.nav-logo,.sec-lbl{color:var(--gold);}
+.section,.hero,.search-section,.settings-panel{border-color:rgba(255,215,106,.18);border-radius:18px;box-shadow:0 18px 52px rgba(0,0,0,.34);}
+.mc,.sl,.tw,.calc,.tier-card,.search-card,.tv-card{border-radius:16px;border-color:rgba(255,215,106,.14);}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">AI<span>INFRA</span>.SCAN <span style="font-size:8px;opacity:.5;">v4.0</span></div>
+    <div class="nav-link active" onclick="scrollTo('#s-makro')">MAKRO</div>
+    <div class="nav-link" onclick="scrollTo('#s-stak')">STAKKEN</div>
+    <div class="nav-link" onclick="scrollTo('#s-top50')">TOP 50</div>
+    <div class="nav-link" onclick="scrollTo('#s-calc')">UDREGNINGER</div>
+    <div class="nav-link" onclick="scrollTo('#s-tier')">TIER</div>
+    <div class="nav-link" onclick="scrollTo('#s-search')">⚡ AI-SØGNING</div>
+    <div class="nav-spacer"></div>
+    <div class="live-badge" id="navLive">● HENTER DATA…</div>
+    <button class="btn-refresh" id="btnRefresh" onclick="refreshAllData()" title="Opdater live-priser og AI infra case for alle tilføjede tickers">⟳ OPDATER</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="sys-tag">// AI_INFRA_SCANNER v4.0 — TOP 50 DATA · POWER · INFRASTRUKTUR DETEKTOR</div>
+  <h1>AI INFRASTRUKTUR</h1>
+  <div class="h1-sub">NØGLETAL 2026 — LIVE PRISER VIA LOKAL PROXY · HOVEDSERVER</div>
+  <div class="hero-meta">
+    <span class="pill po">COMPUTE</span>
+    <span class="pill pb">NETVÆRK</span>
+    <span class="pill pg">STRØM</span>
+    <span class="pill pp">KØLING</span>
+    <span class="pill" style="background:rgba(255,215,0,.10);border:1px solid rgba(255,215,0,.3);color:var(--gold)">DATA CENTRE</span>
+    <span class="pill" style="background:rgba(45,212,191,.10);border:1px solid rgba(45,212,191,.3);color:var(--teal)">NUKLEAR</span>
+  </div>
+  <div class="disclaimer">⚠ IKKE FINANSIEL RÅDGIVNING · Live-priser via Yahoo Finance proxy · Scores er redaktionelle estimater baseret på offentlige data</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SEKTION 1: MAKRO UNIVERSE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s-makro" class="section">
+  <div class="sec-lbl">// MAKRO UNIVERSE</div>
+  <div class="macro-head">
+    <h2>AI INFRASTRUKTUR — NØGLETAL 2026</h2>
+    <div class="macro-actions">
+      <button class="btn-refresh" id="btnMacroLive" onclick="updateMacroLiveCalculations({fetchFresh:true})" title="Hent live-priser og genberegn Makro Universe nøgletal">⚡ OPDATER LIVE UDREGNINGER</button>
+      <span class="macro-status" id="macroLiveStatus">Afventer live-data</span>
+    </div>
+  </div>
+  <div class="macro-grid">
+    <div class="mc o"><div class="mc-lbl">HYPERSCALER CAPEX 2026</div><div class="mc-val" style="color:var(--c1)">$320B</div><div class="mc-sub">Amazon+Microsoft+Google+Meta · +50% YoY</div></div>
+    <div class="mc b"><div class="mc-lbl">US DC STRØM EFTERSPØRGSEL</div><div class="mc-val" style="color:var(--c2)">95 GW</div><div class="mc-sub">2030 target · +197% vs. 2025 · 63 GW gap</div></div>
+    <div class="mc g"><div class="mc-lbl">GLOBAL AI CHIP MARKEDET</div><div class="mc-val" style="color:var(--c3)">$235B</div><div class="mc-sub">2026E · GPU + ASIC + HBM memory</div></div>
+    <div class="mc gd"><div class="mc-lbl">DATACENTER BYGGERI</div><div class="mc-val" style="color:var(--gold)">$1.8T</div><div class="mc-sub">2025–2030 kumulativ investering globalt</div></div>
+    <div class="mc p"><div class="mc-lbl">STRØM BOTTLENECK</div><div class="mc-val" style="color:var(--purple)">2028+</div><div class="mc-sub">Virginia/Dublin nettilslutning fuld · On-site vinder</div></div>
+    <div class="mc o"><div class="mc-lbl">NVIDIA MARKEDSANDEL GPU</div><div class="mc-val" style="color:var(--c1)">88%</div><div class="mc-sub">H100/H200/B200 · AMD MI300X ~10% · Resten 2%</div></div>
+    <div class="mc b"><div class="mc-lbl">COREWEAVE BACKLOG</div><div class="mc-val" style="color:var(--c2)">$66B</div><div class="mc-sub">2025 rev: $5.1B → 2026E: $12.5B (+145%)</div></div>
+    <div class="mc g"><div class="mc-lbl">VRT BACKLOG DÆKNING</div><div class="mc-val" style="color:var(--c3)">2.4×</div><div class="mc-sub">Americas organisk +44% · Book-to-bill 2.5×</div></div>
+    <div class="mc gd"><div class="mc-lbl">GEV BACKLOG</div><div class="mc-val" style="color:var(--gold)">$150B</div><div class="mc-sub">4 års omsætning forudbestilt · +71% Q1 ordrer</div></div>
+    <div class="mc b"><div class="mc-lbl">CHATGPT VS GOOGLE</div><div class="mc-val" style="color:var(--c2)">10×</div><div class="mc-sub">Mere strøm per søgning · Fundamentalt skift</div></div>
+    <div class="mc p"><div class="mc-lbl">ETN DC BACKLOG</div><div class="mc-val" style="color:var(--purple)">$19.6B</div><div class="mc-sub">11 års installationskapacitet · +200% DC ordrer</div></div>
+    <div class="mc o"><div class="mc-lbl">NUKLEAR RENAISSANCE</div><div class="mc-val" style="color:var(--c1)">24 GW</div><div class="mc-sub">US nukleare PPA pipeleine til AI DC · 2030E</div></div>
+  </div>
+  <div class="macro-grid macro-live-grid" id="macroLiveGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SEKTION 2: AI INFRA STAKKEN — DE 5 LAG -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s-stak" class="section">
+  <div class="sec-lbl">// AI INFRASTRUKTUR STAKKEN</div>
+  <h2>DE 5 LAG — TOP 10 PR. LAG FRA TIER-SYSTEMET</h2>
+  <div class="stack">
+    <div class="sl sl1">
+      <div class="sl-n">1</div>
+      <div class="sl-i">
+        <div class="sl-c" style="color:var(--c1)">LAG 1 — COMPUTE KERNEN</div>
+        <div class="sl-t">GPU · ASIC · CHIPS · MEMORY</div>
+        <div class="sl-d">Selve hjernen · Højest vækst · Højest volatilitet</div>
+      </div>
+      <div class="sl-tickers">
+        <span class="stk" style="color:var(--c1)">NVDA</span><span class="stk">AMD</span><span class="stk">AVGO</span><span class="stk">ALAB</span><span class="stk">MU</span><span class="stk">ARM</span><span class="stk">MRVL</span><span class="stk">INTC</span><span class="stk">TSM</span><span class="stk">QCOM</span>
+      </div>
+    </div>
+    <div class="sl sl2">
+      <div class="sl-n">2</div>
+      <div class="sl-i">
+        <div class="sl-c" style="color:var(--pink)">LAG 2 — NETVÆRK & FORBINDELSE</div>
+        <div class="sl-t">SWITCHES · OPTIK · KABLER · ROUTING</div>
+        <div class="sl-d">AI clusters kræver 400G/800G netværk · Enorm vækst</div>
+      </div>
+      <div class="sl-tickers">
+        <span class="stk" style="color:var(--pink)">ANET</span><span class="stk">CSCO</span><span class="stk">LITE</span><span class="stk">GLW</span><span class="stk">PRYMY</span><span class="stk">WCC</span>
+      </div>
+    </div>
+    <div class="sl sl3">
+      <div class="sl-n">3</div>
+      <div class="sl-i">
+        <div class="sl-c" style="color:var(--c3)">LAG 3 — STRØM & ENERGI</div>
+        <div class="sl-t">UPS · TRANSFORMERE · GRID · NUKLEAR · SOL/VIND</div>
+        <div class="sl-d">"Strøm er det nye AI bottleneck" — Goldman Sachs 2026</div>
+      </div>
+      <div class="sl-tickers">
+        <span class="stk" style="color:var(--c3)">VRT</span><span class="stk">ETN</span><span class="stk">GEV</span><span class="stk">BE</span><span class="stk">CEG</span><span class="stk">VST</span><span class="stk">TLN</span><span class="stk">OKLO</span><span class="stk">NEE</span><span class="stk">PWR</span><span class="stk">POWL</span><span class="stk">HUBB</span><span class="stk">EMR</span><span class="stk">AES</span><span class="stk">SO</span>
+      </div>
+    </div>
+    <div class="sl sl4">
+      <div class="sl-n">4</div>
+      <div class="sl-i">
+        <div class="sl-c" style="color:var(--purple)">LAG 4 — KØLING & FACILITETER</div>
+        <div class="sl-t">LIQUID COOLING · HVAC · DATACENTER BYGNING</div>
+        <div class="sl-d">H100 GPU: 700W · GB200 rack: 120kW → Køling er kritisk</div>
+      </div>
+      <div class="sl-tickers">
+        <span class="stk" style="color:var(--purple)">NVT</span><span class="stk">EQIX</span><span class="stk">DLR</span><span class="stk">CRWV</span><span class="stk">CORZ</span><span class="stk">APLD</span><span class="stk">NBIS</span><span class="stk">SMCI</span>
+      </div>
+    </div>
+    <div class="sl sl5">
+      <div class="sl-n">5</div>
+      <div class="sl-i">
+        <div class="sl-c" style="color:var(--gold)">LAG 5 — KONSTRUKTION & KAPITAL</div>
+        <div class="sl-t">EPC · ELEKTRIK · ENGINEERING · FINANS</div>
+        <div class="sl-d">Picks & shovels til fysisk DC-build-out · Multi-år backlog</div>
+      </div>
+      <div class="sl-tickers">
+        <span class="stk" style="color:var(--gold)">EME</span><span class="stk">STRL</span><span class="stk">FIX</span><span class="stk">IESC</span><span class="stk">ACM</span><span class="stk">FLR</span><span class="stk">URI</span><span class="stk">WCC</span><span class="stk">BN</span><span class="stk">BWXT</span><span class="stk">NUE</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SEKTION 3: TIER SCORE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s-top50" class="section">
+  <div class="sec-lbl">// TIER SCORE</div>
+  <h2>TIER SCORE</h2>
+  <div class="live-status" id="liveStatus">● HENTER LIVE PRISER…</div>
+  <div class="tier-score-controls">
+    <div class="tier-score-field">
+      <label for="tierScoreCategory">Kategori:</label>
+      <select id="tierScoreCategory" onchange="setTierScoreFilter('category',this.value)">
+        <option value="">Alle kategorier</option>
+      </select>
+    </div>
+    <div class="tier-score-field">
+      <label for="tierScoreTier">Tier:</label>
+      <select id="tierScoreTier" onchange="setTierScoreFilter('tier',this.value)">
+        <option value="">Alle tiers</option>
+        <option value="S,A">S-A Tier</option>
+        <option value="A,B">A-B Tier</option>
+        <option value="B,C">B-C Tier</option>
+        <option value="C,D">C-D Tier</option>
+        <option value="S">S-Tier</option>
+        <option value="A">A-Tier</option>
+        <option value="B">B-Tier</option>
+        <option value="C">C-Tier</option>
+        <option value="D">D-Tier</option>
+      </select>
+    </div>
+    <div class="tier-score-count" id="tierScoreCount"></div>
+  </div>
+  <div class="tw">
+    <table id="top50Table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>TICKER</th>
+          <th>SELSKAB</th>
+          <th class="sortable" data-sort="cat" onclick="setTierScoreSort('cat')">KATEGORI<span class="sort-ind" id="sort-cat"></span></th>
+          <th class="sortable" data-sort="score" onclick="setTierScoreSort('score')" style="min-width:120px">SCORE<span class="sort-ind" id="sort-score"></span></th>
+          <th class="sortable" data-sort="tier" onclick="setTierScoreSort('tier')">TIER<span class="sort-ind" id="sort-tier"></span></th>
+          <th class="sortable" data-sort="mom" onclick="setTierScoreSort('mom')">MOMENTUM<span class="sort-ind" id="sort-mom"></span></th>
+          <th>LIVE PRIS</th>
+          <th>1D ÆND.</th>
+          <th style="min-width:240px;text-align:left;padding-left:16px">AI INFRA CASE</th>
+        </tr>
+      </thead>
+      <tbody id="top50Body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SEKTION 5: FINANSIELLE BEREGNINGER -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s-calc" class="section">
+  <div class="sec-lbl">// MINE UDREGNINGER</div>
+  <h2>FINANSIELLE BEREGNINGER — DE VIGTIGSTE TAL</h2>
+  <div class="calc-grid" id="calcGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SEKTION 5: SAMLET TIER RANGORDNING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s-tier" class="section">
+  <div class="sec-lbl">// ENDELIG VURDERING</div>
+  <h2>TOP 50 — SAMLET TIER RANGORDNING</h2>
+  <div class="tier-grid" id="tierGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SEKTION 6: AI-SØGNING (NYT!) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="s-search" class="section">
+  <div class="sec-lbl">// AI TICKER SØGNING</div>
+  <h2>OPDAG NYE TICKERS — LIVE DATA OPDATERING</h2>
+
+  <div class="search-section">
+    <div class="search-title">⚡ INTERNET SØGNING + LIVE DATA</div>
+    <div class="search-sub">
+      Søg efter nye AI/Infra/Power-aktier på hele Yahoo Finance · Tilføj dem til din liste og hent live-priser automatisk.<br>
+      Eksempler: "datacenter cooling", "nuclear power AI", "grid infrastructure", "liquid cooling", "SMR reactor"
+    </div>
+    <div class="search-row">
+      <input class="search-input" id="searchInput" type="text" placeholder="Søg aktier: 'datacenter power', 'AI infrastructure', 'nuclear SMR'…" autocomplete="off"/>
+      <button class="btn-search" id="btnSearch" onclick="doSearch()">🔍 SØG TICKERS</button>
+      <button class="btn-ai" id="btnAI" onclick="doAIAnalysis()">🤖 AI ANALYSE</button>
+    </div>
+    <div style="margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);">
+      ⚙ API-nøgler sættes via <span style="color:var(--c1);cursor:pointer;text-decoration:underline" onclick="openSettings()">INDSTILLINGER</span> (knap nede til højre) · Gemmes sikkert i <code style="color:var(--c2)">api_keys.json</code> på serveren
+    </div>
+    <div id="searchResults" class="search-results"></div>
+    <div id="addedTickers" class="added-tickers"></div>
+    <div id="aiResult"></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<div class="footer wrap">
+  AI INFRA SCANNER v4.0 · HOVEDSERVER · Yahoo Finance proxy · FRED proxy · Anthropic Claude API<br>
+  DATAKILDE: Yahoo Finance + FRED GDP · Scores er redaktionelle estimater · Ikke finansiel rådgivning
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   STATE & CONFIG
+═══════════════════════════════════════════════════════════════ */
+const API = '/api/aiinfra';
+
+const state = {
+  live: {},
+  liveTotal: 0,
+  liveFetched: 0,
+  liveMissing: [],
+  addedTickers: [],
+  dbLoaded: false,
+  tierScoreCategory: "",
+  tierScoreTier: "",
+  tierScoreSortKey: "score",
+  tierScoreSortDir: "desc",
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   TOP50 DATA
+═══════════════════════════════════════════════════════════════ */
+const TOP50 = [
+  {r:1,  t:"VRT",  n:"Vertiv Holdings",       cat:"STRØM/KØLING", score:93, tier:"S", mom:"A+ Momentum", case:"Q1 2026 EPS $1.17 (+15.8% beat) · Americas organisk +44% · AI DC UPS/køling monopol"},
+  {r:2,  t:"GEV",  n:"GE Vernova",            cat:"STRØM/TURB.",  score:91, tier:"S", mom:"Stærk",        case:"$150B backlog · Book-to-bill 2.5× · Q1 ordrer +71% · 4 års omsætning forudbestilt"},
+  {r:3,  t:"BE",   n:"Bloom Energy",          cat:"ON-SITE STRØM",score:89, tier:"S", mom:"▲ +130% Q1",   case:"Oracle 2.8 GW kontrakt = 28× årsproduktion · Første profit Q1 2026"},
+  {r:4,  t:"ANET", n:"Arista Networks",       cat:"AI NETVÆRK",   score:86, tier:"S", mom:"Stærk",        case:"$9B FY25 rev (+29%) · $5.4B deferred · Passerede Cisco i DC switching"},
+  {r:5,  t:"EME",  n:"EMCOR Group",           cat:"ELEC. BYGNING",score:83, tier:"A", mom:"+50% YTD",     case:"Verdens største DC-elektriker · Direkte beneficiary af $320B hyperscaler capex"},
+  {r:6,  t:"PWR",  n:"Quanta Services",       cat:"EL/EPC",       score:82, tier:"A", mom:"+40%+",        case:"Grid + datacenter elektrik · Multi-mia. backlog · Direct NVIDIA-samarbejde"},
+  {r:7,  t:"APH",  n:"Amphenol Corp.",        cat:"STIK/KABLER",  score:81, tier:"A", mom:"Stærk",        case:"$15B+ omsætning · AI interconnect monopol · Hvert AI cluster bruger APH stik"},
+  {r:8,  t:"CEG",  n:"Constellation Energy",  cat:"NUKLEAR",      score:80, tier:"A", mom:"+40%+",        case:"Microsoft 20-år TMI aftale · US's største nuklear fleet · AI DC PPA pipeline"},
+  {r:9,  t:"ETN",  n:"Eaton Corp.",           cat:"STRØM MGMT",   score:79, tier:"A", mom:"+30%+",        case:"$19.6B DC backlog · 11 års kapacitet · Boyd Thermal $9.5B opkøb · +200% DC ordrer"},
+  {r:10, t:"LITE", n:"Lumentum Holdings",     cat:"OPTIK NETVÆRK",score:78, tier:"A", mom:"+60%+",        case:"800G/1.6T optiske transceivere · AI DC spine netværk kritisk komponent"},
+  {r:11, t:"GLW",  n:"Corning Inc.",          cat:"FIBEROPTIK",   score:77, tier:"A", mom:"+40%+",        case:"Optisk fiber backbone til AI DC · $3B+ AI relateret ordrer 2025-2026"},
+  {r:12, t:"VST",  n:"Vistra Corp.",          cat:"ENERGI/NUKL.", score:76, tier:"A", mom:"+100%+",       case:"Texas ERCOT provider · Nuklear + gas → AI DC strøm · Google multi-GW PPA"},
+  {r:13, t:"STX",  n:"Seagate Technology",    cat:"STORAGE",      score:75, tier:"A", mom:"Stærk",        case:"AI data lagring · HAMR teknologi · Voksende AI inferens storage krav"},
+  {r:14, t:"ALAB", n:"Astera Labs",           cat:"AI CONNECTIVITET",score:74,tier:"A",mom:"+50%+",       case:"PCIe/CXL retimers til AI clusters · NVIDIA partner · 100% AI revenue exposure"},
+  {r:15, t:"STRL", n:"Sterling Infrastructure",cat:"DC BYGNING",  score:73, tier:"A", mom:"+60%+",        case:"Data center foundation + site work · Direkte AI build-out contractor"},
+  {r:16, t:"EQIX", n:"Equinix Inc.",          cat:"DC REIT/COLO", score:72, tier:"A", mom:"Stabil",       case:"250+ DC globalt · AI colocation boom · $4B+ NVIDIA reservationer 2025"},
+  {r:17, t:"POWL", n:"Powell Industries",     cat:"DC SWITCHGEAR",score:71, tier:"A", mom:"+86% YTD",     case:"$400M+ DC megaorder · 3-for-1 aktiesplit · Vendor lock-in DC el-tavler"},
+  {r:18, t:"WDC",  n:"Western Digital",       cat:"AI STORAGE",   score:69, tier:"A", mom:"Stærk",        case:"NAND + HDD til AI training storage · HAMR konkurrent til STX"},
+  {r:19, t:"TLN",  n:"Talen Energy",          cat:"NUKL./STRØM",  score:68, tier:"A", mom:"+80%+",        case:"Susquehanna nuklear plant · Amazon AWS 960 MW hyperscale PPA · 2.5 GW pipeline"},
+  {r:20, t:"FIX",  n:"Comfort Systems",       cat:"MEP/HVAC",     score:66, tier:"A", mom:"+50%+",        case:"Mechanical/Electrical/Plumbing til AI DC · Massive backlog · Small-cap gem"},
+  {r:21, t:"SMCI", n:"Super Micro Computer",  cat:"AI SERVERE",   score:65, tier:"A", mom:"Volatil",      case:"Direct liquid cooling AI servere · NVIDIA compute partner · Nær NVIDIA"},
+  {r:22, t:"CRWV", n:"CoreWeave",             cat:"AI CLOUD",     score:64, tier:"A", mom:"+200%+",       case:"$66B backlog · 5.3× revenue dækning · NVIDIA investor + kunde + leverandør"},
+  {r:23, t:"DLR",  n:"Digital Realty Trust",  cat:"DC REIT",      score:60, tier:"B", mom:"Stabil",       case:"300+ DC globalt · 50 metros · AI colocation REIT · Konkurrent til EQIX"},
+  {r:24, t:"NVT",  n:"nVent Electric",        cat:"LIQUID COOL",  score:59, tier:"B", mom:"+30%+",        case:"Liquid cooling + enclosures til AI DC · +10-13% CAGR guide"},
+  {r:25, t:"BWXT", n:"BWX Technologies",      cat:"SMR KOMP.",    score:58, tier:"B", mom:"Stabil",       case:"$3.2B omsætning · $7.26B backlog (+50%) · Nuklear komponenter + SMR"},
+  {r:26, t:"HUBB", n:"Hubbell Inc.",          cat:"STRØM DIST.",  score:57, tier:"B", mom:"+25%+",        case:"Mobile power distribution skids · DC grounding · Connectors"},
+  {r:27, t:"INTC", n:"Intel Corporation",     cat:"AI CHIPS",     score:56, tier:"B", mom:"+197% YTD",    case:"Gaudi AI chips · Foundry turnaround · DC GPU konkurrent · Geopolitisk kort"},
+  {r:28, t:"WCC",  n:"WESCO International",   cat:"ELEC. DIST.",  score:55, tier:"B", mom:"+20%+",        case:"Elektrisk distribution + supply chain til DC byggeprojekter · Distributør"},
+  {r:29, t:"LRCX", n:"Lam Research",          cat:"CHIP TOOLS",   score:54, tier:"B", mom:"Stærk",        case:"$5.84B Q1 · $6.6B Q2 guide · Alle AI chips bruger LRCX etch-tools"},
+  {r:30, t:"IESC", n:"IES Holdings",          cat:"ELEC. BYGN.",  score:53, tier:"B", mom:"A+ Momentum",  case:"Elektrisk konstruktion til datacenter infrastruktur · Small-cap pick"},
+  {r:31, t:"ABB",  n:"ABB Ltd.",              cat:"STRØM/GRID",   score:52, tier:"B", mom:"+20%+",        case:"NVIDIA 800V DC partner · $163B backlog · Medium-voltage DC distribution"},
+  {r:32, t:"APLD", n:"Applied Digital",       cat:"AI DC OPR.",   score:51, tier:"B", mom:"Volatil",      case:"AI-dedikerede DC byggerier i USA · 600 MW pipeline · High risk/reward"},
+  {r:33, t:"AVGO", n:"Broadcom Inc.",         cat:"ASIC/NETVÆRK", score:50, tier:"C", mom:"+23% YTD",     case:"Custom ASIC 70-80% markedsandel · AI Ethernet switches · VMware integration"},
+  {r:34, t:"EMR",  n:"Emerson Electric",      cat:"AUTOMATION",   score:49, tier:"C", mom:"+15%+",        case:"Process automation + power mgmt til AI DC · Stabil industriel vækst"},
+  {r:35, t:"OKLO", n:"Oklo Inc.",             cat:"SMR PRE-REV.", score:48, tier:"C", mom:"+167%",        case:"~14 GW pipeline · Switch 12 GW aftale · Sam Altman backed · Pre-revenue"},
+  {r:36, t:"BN",   n:"Brookfield Corp.",      cat:"AI KAPITAL",   score:47, tier:"C", mom:"+20%+",        case:"$180B deployerbar kapital · $100B AI infra program · NVIDIA partner"},
+  {r:37, t:"NEE",  n:"NextEra Energy",        cat:"VEDVARENDE",   score:46, tier:"C", mom:"+15%+",        case:"Verdens største vedvarende energiproducent · Vokser til 30 GW 2035"},
+  {r:38, t:"SMR",  n:"NuScale Power",         cat:"SMR",          score:45, tier:"C", mom:"-29%",         case:"Eneste NRC-godkendte SMR design · Retssag overhang · Høj spekulativ risiko"},
+  {r:39, t:"NBIS", n:"Nebius Group",          cat:"AI CLOUD EU",  score:44, tier:"C", mom:"+300%+",       case:"Europæisk AI cloud · NVIDIA partner · Lille men hyperfast vækst"},
+  {r:40, t:"FLR",  n:"Fluor Corp.",           cat:"EPC BYGNING",  score:43, tier:"C", mom:"+20%+",        case:"Global engineering/EPC kontraktør til store DC-projekter · Turnaround"},
+  {r:41, t:"AMD",  n:"AMD",                   cat:"GPU #2",       score:42, tier:"C", mom:"+51%",         case:"MI350X GPU · DC vækst · $10.25B Q1 rev. · Data center → $120B 2030"},
+  {r:42, t:"CORZ", n:"Core Scientific",       cat:"HPC DC",       score:41, tier:"C", mom:"Volatil",      case:"Pivot fra Bitcoin → AI HPC hosting · Rekonstrueret 2023 · Høj risiko"},
+  {r:43, t:"URI",  n:"United Rentals",        cat:"UDSTYR LEJE",  score:40, tier:"C", mom:"+15%+",        case:"Maskinudlejning til DC-byggepladser · Boom i lejemarkedet · Cyklisk"},
+  {r:44, t:"ACM",  n:"AECOM",                 cat:"INGENIØRBYGG", score:39, tier:"C", mom:"+15%+",        case:"Engineering + construction management for AI DC campus · Global reach"},
+  {r:45, t:"NVDA", n:"NVIDIA Corporation",    cat:"GPU CHIPS",    score:38, tier:"D", mom:"+30%+ YTD",    case:"Originalen · 85-90% GPU markedsandel · Men ikke 'picks & shovels'"},
+  {r:46, t:"TSM",  n:"TSMC",                  cat:"CHIP PRODUKT.",score:37, tier:"D", mom:"+42% YTD",     case:"Producerer alle AI chips · 60% CAGR AI revenue til 2029 · Taiwan risiko"},
+  {r:47, t:"SO",   n:"Southern Company",      cat:"UTILITY",      score:36, tier:"D", mom:"Stabil",       case:"Southeastern USA utility · Vogtle nuklear plant online 2024 · Defensiv"},
+  {r:48, t:"NUE",  n:"Nucor Corporation",     cat:"STÅL",         score:35, tier:"D", mom:"+10%+",        case:"Stål til datacenter konstruktion · Sekundær AI beneficiary · Cyklisk"},
+  {r:49, t:"AES",  n:"AES Corporation",       cat:"VEDVARENDE",   score:34, tier:"D", mom:"Volatil",      case:"Vedvarende energi til AI DC · Amazon + Meta kontrakter · Gæld overhang"},
+  {r:50, t:"PCG",  n:"PG&E Corp.",            cat:"UTILITY",      score:33, tier:"D", mom:"+10%",         case:"California utility · AI DC strøm · Baggrundsskylden risiko · High leverage"},
+];
+
+const CALCS = [
+  {title:"VERTIV — EPS FREMSKRIVNING",color:"var(--c1)",formula:"Q1 2026 EPS: $1,17 vs. $1,01 ventet (+15,8% beat)\nFull-year guidance: $6,30–$6,40\nBofA kursmål: $440 → Upside = ($440-live)/live\nRevenue guide 2026: +34% YoY · Americas organisk: +44%",result:"+25.7% UPSIDE",sub:"BofA $440 mål · Americas +44% organisk vækst",ticker:"VRT",target:440},
+  {title:"GE VERNOVA — BACKLOG DÆKNING",color:"var(--c3)",formula:"Total backlog: $150 mia. · 2025 rev. est.: ~$38 mia.\nBacklog dækning: $150B ÷ $38B = 3,95 år\nQ1 2026 ordrer: $18,3B (+71%) · Book-to-bill: 2,5×\nGEV investor day mål: $52B rev. i 2028 · backlog $200B",result:"4 ÅRS OMSÆTNING FORUDBESTILT",sub:"Book-to-bill 2.5× · Udsolgt til 2030",ticker:"GEV"},
+  {title:"EATON — DC BACKLOG BEREGNING",color:"var(--gold)",formula:"DC backlog: $19.6 mia. (Barclays konference)\nEaton DC backlog = 11 år installeret kapacitet\nBoyd Thermal opkøb: $9.5B → hæver rev./MW\n2026 rev. konsensus: $30.99B (+12.9%) · DC ordrer +200%",result:"11 ÅRS BACKLOG KAPACITET",sub:"DC ordrer +200% · $9.5B Boyd Thermal opkøb",ticker:"ETN"},
+  {title:"BLOOM ENERGY — ORACLE MEGADEAL",color:"#cd7f32",formula:"Oracle kontrakt: 2,8 GW · 2024 kapacitet: ~100 MW/år\nOracle = 28× Blooms årsproduktion\nQ1 2026 rev.: +130% ÅoÅ · Guidance hævet: 60%→80%\n$70M nettoindkomst Q1 (første profit i årevis)",result:"FØRSTE PROFIT Q1 2026",sub:"+130% Q1 revenue · Oracle = 28× årsproduktion",ticker:"BE"},
+  {title:"ARISTA — CISCO OVERTAGET",color:"var(--teal)",formula:"FY25 omsætning: $9B (+29%) · Passerede Cisco i DC switching\n2026 AI netværk target hævet: $2.75B → $3.25B\nDeferred revenue: $5.4B (multi-år synlighed)\nCash: $10B+ · Netværk = 10-15% af AI cluster total cost",result:"$5.4B FORUDBETALTE KONTRAKTER",sub:"DC switching overhalet Cisco · $10B+ cash",ticker:"ANET"},
+  {title:"POWELL INDUSTRIES — VÆKST ACCELERATION",color:"var(--c1)",formula:"YTD afkast: +86% · Backlog: $1.8B\n$400M+ DC megaorder booked i Q2 FY2026\nBestyrelsen godkendte 3-for-1 aktiesplit\nDC medium-voltage switchgear: vendor lock-in",result:"+86% YTD · 3-FOR-1 SPLIT",sub:"$400M+ DC megaorder · Vendor lock-in fordel",ticker:"POWL"},
+  {title:"USA STRØM BOTTLENECK",color:"var(--c2)",formula:"US DC kapacitet 2025: ~32 GW → 2030: ~95 GW\nNødvendig ny kapacitet: 63 GW\nFERC ny efterspørgsel til 2030: 166 GW\nNettilslutning Virginia/Dublin: strækker til 2028+\nChatGPT søgning: 10× mere strøm end Google",result:"63 GW NY KAPACITET MANGLER",sub:"Strøm er det største AI bottleneck – ikke chips"},
+  {title:"COREWEAVE — BACKLOG MULTIPLE",color:"var(--gold)",formula:"2025 omsætning: $5.1B · Guide 2026 midpoint: $12.5B (+145%)\nBacklog: $66B ÷ $12.5B = 5.3× revenue dækning\n2027 (est. +60% vækst): ~$20B · 2028: ~$28B\nNVIDIA er investor, leasetager og hardware-leverandør",result:"5.3× REVENUE DÆKNING",sub:"$66B backlog · NVIDIA investor og kunde",ticker:"CRWV"},
+];
+
+const TIERS = [
+  {tier:"S",tag:"gs",tickers:"VRT · GEV · BE · ANET",range:"86–93",profile:"Direkte AI infra · Høj synlighed · Lav risiko",investor:"MODERAT",conc:"Bedste risk/reward 2026 · Kernepositioner",color:"var(--c1)"},
+  {tier:"A",tag:"ga",tickers:"PWR · APH · CEG · ETN · LITE · GLW · VST · STX · ALAB · EME · EQIX · POWL · WDC · TLN · STRL · FIX · SMCI · CRWV",range:"64–83",profile:"Stærk AI eksponering · Konkret backlog",investor:"MODERAT",conc:"Solide vækstcases · Diversificeret AI infra",color:"var(--c3)"},
+  {tier:"B",tag:"gb",tickers:"DLR · NVT · BWXT · HUBB · INTC · WCC · LRCX · IESC · ABB · APLD",range:"50–63",profile:"Indirekte AI infra · Solid industri position",investor:"AKTIV",conc:"Sekundære beneficiaries med solide fundamentals",color:"var(--c2)"},
+  {tier:"C",tag:"gc",tickers:"AVGO · EMR · OKLO · BN · NEE · SMR · NBIS · FLR · AMD · CORZ · URI · ACM",range:"39–49",profile:"Spekulativ / indirekte eksponering",investor:"ERFAREN",conc:"Enten for dyre eller high-risk plays",color:"var(--purple)"},
+  {tier:"D",tag:"gd2",tickers:"NVDA · TSM · SO · NUE · AES · PCG",range:"33–38",profile:"Overpriced flagship / defensiv utility",investor:"SPECIFIK",conc:"NVDA/TSM: for dyre for picks&shovels strategien",color:"var(--gold)"},
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER FUNCTIONS
+═══════════════════════════════════════════════════════════════ */
+function tierColor(tier){
+  return {S:"var(--c1)",A:"var(--c3)",B:"var(--c2)",C:"var(--purple)",D:"var(--gold)"}[tier]||"var(--muted)";
+}
+function tierClass(tier){
+  return {S:"gs",A:"ga",B:"gb",C:"gc",D:"gd2"}[tier]||"";
+}
+function catClass(cat){
+  const c=cat.toUpperCase();
+  if(c.includes("STRØM")||c.includes("POWER")||c.includes("ENERGI")) return "to";
+  if(c.includes("NETVÆRK")||c.includes("OPTIK")||c.includes("STIK")) return "tb";
+  if(c.includes("CLOUD")||c.includes("AI")) return "ttl";
+  if(c.includes("NUKL")||c.includes("SMR")) return "tgd";
+  if(c.includes("BYGN")||c.includes("EPC")||c.includes("ELEKTR")) return "tg";
+  if(c.includes("KØLING")||c.includes("COOL")) return "tp";
+  if(c.includes("GPU")||c.includes("CHIP")) return "tpk";
+  if(c.includes("REIT")||c.includes("DC")) return "ttl";
+  return "tb";
+}
+function barColor(tier){
+  return {S:"var(--c1)",A:"var(--c3)",B:"var(--c2)",C:"var(--purple)",D:"var(--gold)"}[tier]||"#444";
+}
+
+const STACK_LAYER_META = {
+  1:{color:"var(--c1)", label:"COMPUTE", fallback:["NVDA","AMD","AVGO","ALAB","INTC","TSM","LRCX","SMCI","STX","WDC"]},
+  2:{color:"var(--pink)", label:"NETVÆRK", fallback:["ANET","APH","LITE","GLW","WCC","AVGO","ALAB"]},
+  3:{color:"var(--c3)", label:"STRØM", fallback:["VRT","GEV","BE","CEG","ETN","VST","TLN","BWXT","HUBB","ABB","OKLO","NEE","SMR","SO","AES","PCG","POWL"]},
+  4:{color:"var(--purple)", label:"KØLING/DC", fallback:["VRT","NVT","EQIX","DLR","FIX","SMCI","CRWV","APLD","NBIS","CORZ"]},
+  5:{color:"var(--gold)", label:"BYG/KAPITAL", fallback:["EME","PWR","STRL","FIX","IESC","FLR","ACM","URI","BN","NUE","BWXT"]}
+};
+
+const STACK_FIXED_LAYER = {
+  NVDA:1, AMD:1, AVGO:1, ALAB:1, INTC:1, TSM:1, LRCX:1, STX:1, WDC:1, SMCI:1,
+  ANET:2, APH:2, LITE:2, GLW:2, WCC:2,
+  VRT:3, GEV:3, BE:3, CEG:3, ETN:3, VST:3, TLN:3, BWXT:3, HUBB:3, ABB:3, OKLO:3, NEE:3, SMR:3, SO:3, AES:3, PCG:3, POWL:3,
+  NVT:4, EQIX:4, DLR:4, CRWV:4, APLD:4, NBIS:4, CORZ:4,
+  EME:5, PWR:5, STRL:5, FIX:5, IESC:5, FLR:5, ACM:5, URI:5, BN:5, NUE:5
+};
+
+function stackLayerFor(s){
+  if(STACK_FIXED_LAYER[s.t])return STACK_FIXED_LAYER[s.t];
+  const text=[s.t,s.n,s.cat,s.case].join(" ").toUpperCase();
+  if(/GPU|ASIC|CHIP|SEMICON|FOUNDRY|MEMORY|HBM|SERVER|STORAGE|NAND|HDD|COMPUTE|CPU|ACCELERATOR/.test(text))return 1;
+  if(/NETV|NETWORK|SWITCH|OPTIK|OPTIC|FIBER|FIBRE|KABEL|CABLE|CONNECT|INTERCONNECT|TRANSCEIVER|ROUTING|ETHERNET/.test(text))return 2;
+  if(/STRØM|STROM|POWER|ENERGI|ENERGY|GRID|NUKL|NUCLEAR|SMR|UTILITY|UPS|TRANSFORM|SWITCHGEAR|ELECTRIC|ELNET|PPA|SOLAR|WIND/.test(text))return 3;
+  if(/KØLING|KOLING|COOL|HVAC|LIQUID|THERMAL|REIT|COLO|DATACENTER|DATA CENTER|DC OPR|AI CLOUD|HPC|HOSTING|CLOUD/.test(text))return 4;
+  if(/BYGN|BUILD|EPC|ENGINEER|INGENI|CONSTRUCT|KONSTRUK|ELEKTR|MEP|CAPITAL|KAPITAL|FINANS|STEEL|STÅL|UDSTYR|EQUIPMENT|CONTRACTOR/.test(text))return 5;
+  return 5;
+}
+
+function stackSort(a,b){
+  const tierRank={S:0,A:1,B:2,C:3,D:4};
+  return (tierRank[a.tier]??9)-(tierRank[b.tier]??9) || b.score-a.score || a.r-b.r;
+}
+
+function buildStack(){
+  normalizeTop50Tiers();
+  const rows=document.querySelectorAll("#s-stak .sl");
+  if(!rows.length)return;
+  for(let layer=1;layer<=5;layer++){
+    const meta=STACK_LAYER_META[layer];
+    let members=TOP50.filter(s=>stackLayerFor(s)===layer).sort(stackSort).slice(0,10);
+    if(members.length<10){
+      const existing=new Set(members.map(s=>s.t));
+      const fillers=meta.fallback
+        .map(t=>TOP50.find(s=>s.t===t))
+        .filter(Boolean)
+        .filter(s=>!existing.has(s.t))
+        .sort(stackSort)
+        .slice(0,10-members.length);
+      members=members.concat(fillers);
+    }
+    const holder=rows[layer-1].querySelector(".sl-tickers");
+    if(!holder)continue;
+    holder.innerHTML=members.map((s,i)=>{
+      const nm=(s.n||s.t).replace(/\*\*/g,"").replace(/--+/g,"").trim();
+      const nameEsc=nm.replace(/'/g,"\\'");
+      const isTop=i===0;
+      const newBadge=s.isNew?`<small style="font-size:7px;color:var(--c3);margin-left:3px">NEW</small>`:"";
+      return `<span class="stk" style="color:${isTop?meta.color:tierColor(s.tier)}" onclick="openTV('${s.t}','${nameEsc}')" title="#${i+1} ${meta.label} · ${s.tier}-Tier · Score ${s.score} · ${nm}">${s.t}${newBadge}</span>`;
+    }).join("");
+  }
+}
+
+function escHtml(s){
+  return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+}
+
+function setTierScoreFilter(kind,value){
+  if(kind==="category")state.tierScoreCategory=value||"";
+  if(kind==="tier")state.tierScoreTier=value||"";
+  buildTop50();
+}
+
+function setTierScoreSort(key){
+  if(!["cat","score","tier","mom"].includes(key))return;
+  if(state.tierScoreSortKey===key){
+    state.tierScoreSortDir=state.tierScoreSortDir==="asc"?"desc":"asc";
+  }else{
+    state.tierScoreSortKey=key;
+    state.tierScoreSortDir=(key==="cat"||key==="mom")?"asc":"desc";
+  }
+  buildTop50();
+}
+
+function tierScoreTierSet(){
+  return String(state.tierScoreTier||"")
+    .split(",")
+    .map(t=>t.trim().toUpperCase())
+    .filter(t=>["S","A","B","C","D"].includes(t));
+}
+
+function tierScoreTierLabel(){
+  const tiers=tierScoreTierSet();
+  if(tiers.length===0)return "";
+  return tiers.length===1?tiers[0]+"-Tier":tiers.join("-")+" Tier";
+}
+
+function momentumSortValue(mom){
+  const text=String(mom||"").toUpperCase();
+  if(text.includes("A+"))return 1000;
+  if(text.includes("STÆRK")||text.includes("STAERK"))return 900;
+  if(text.includes("STABIL"))return 500;
+  if(text.includes("VOLATIL"))return 250;
+  const nums=[...text.matchAll(/[+-]?\d+(?:[.,]\d+)?/g)].map(m=>Number(m[0].replace(",","."))).filter(Number.isFinite);
+  return nums.length?Math.max(...nums):0;
+}
+
+function tierScoreSortValue(s,key){
+  if(key==="cat")return String(s.cat||"");
+  if(key==="score")return Number(s.score)||0;
+  if(key==="tier")return {S:5,A:4,B:3,C:2,D:1}[s.tier]||0;
+  if(key==="mom")return momentumSortValue(s.mom);
+  return Number(s.r)||0;
+}
+
+function sortTierScoreRows(rows){
+  const key=state.tierScoreSortKey||"score";
+  const dir=state.tierScoreSortDir==="asc"?1:-1;
+  return [...rows].sort((a,b)=>{
+    const av=tierScoreSortValue(a,key);
+    const bv=tierScoreSortValue(b,key);
+    let cmp=0;
+    if(typeof av==="string"||typeof bv==="string"){
+      cmp=String(av).localeCompare(String(bv),"da",{sensitivity:"base"});
+    }else{
+      cmp=av-bv;
+    }
+    if(cmp!==0)return cmp*dir;
+    return (Number(b.score)||0)-(Number(a.score)||0) || String(a.t).localeCompare(String(b.t));
+  });
+}
+
+function tierScoreRows(){
+  const tierSet=tierScoreTierSet();
+  const filtered=TOP50.filter(s=>
+    (!state.tierScoreCategory||s.cat===state.tierScoreCategory) &&
+    (tierSet.length===0||tierSet.includes(s.tier))
+  );
+  return sortTierScoreRows(filtered);
+}
+
+function buildTierScoreControls(rows){
+  const catSelect=document.getElementById("tierScoreCategory");
+  const tierSelect=document.getElementById("tierScoreTier");
+  const countEl=document.getElementById("tierScoreCount");
+  if(catSelect){
+    const categories=[...new Set(TOP50.map(s=>s.cat).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    if(state.tierScoreCategory&&!categories.includes(state.tierScoreCategory)){
+      state.tierScoreCategory="";
+    }
+    catSelect.innerHTML='<option value="">Alle kategorier</option>'+categories.map(cat=>
+      `<option value="${escHtml(cat)}"${cat===state.tierScoreCategory?' selected':''}>${escHtml(cat)}</option>`
+    ).join("");
+  }
+  if(tierSelect)tierSelect.value=state.tierScoreTier||"";
+  if(countEl){
+    const bits=[];
+    if(state.tierScoreCategory)bits.push(state.tierScoreCategory);
+    const tierLabel=tierScoreTierLabel();
+    if(tierLabel)bits.push(tierLabel);
+    countEl.textContent=`${rows.length}/${TOP50.length} aktier`+(bits.length?` · ${bits.join(" · ")}`:"");
+  }
+  document.querySelectorAll("th.sortable").forEach(th=>{
+    const key=th.dataset.sort;
+    const active=key===state.tierScoreSortKey;
+    th.classList.toggle("sorted",active);
+    const ind=th.querySelector(".sort-ind");
+    if(ind)ind.textContent=active?(state.tierScoreSortDir==="asc"?"▲":"▼"):"";
+  });
+}
+
+function buildTop50(){
+  normalizeTop50Tiers();
+  const tbody=document.getElementById("top50Body");
+  if(!tbody)return;
+  const rows=tierScoreRows();
+  buildTierScoreControls(rows);
+  let html="";
+  if(rows.length===0){
+    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:var(--muted);font-family:'Share Tech Mono',monospace;padding:18px;">Ingen aktier matcher de valgte filtre.</td></tr>`;
+    return;
+  }
+  for(const s of rows){
+    const l=state.live[s.t];
+    const price = l&&l.regularMarketPrice!=null ? "$"+Number(l.regularMarketPrice).toFixed(2) : '<span style="opacity:.3">—</span>';
+    const chgPct = l&&l.regularMarketChangePercent!=null ? Number(l.regularMarketChangePercent) : null;
+    const chgStr = chgPct!=null ? `<span class="${chgPct>=0?'up':'dn'}">${chgPct>=0?'▲ +':'▼ '}${Math.abs(chgPct).toFixed(2)}%</span>` : '<span style="opacity:.3">—</span>';
+    const tc=tierColor(s.tier);
+    html+=`<tr>
+      <td><span class="mono" style="color:${tc}">${s.r}</span></td>
+      <td><span class="mono" style="font-weight:800;color:${tc};cursor:pointer;text-decoration:underline dotted;" onclick="openTV('${s.t}','${s.n}')" title="Vis TradingView chart">${s.t}</span></td>
+      <td><span style="color:#e2e8f0;font-size:11px">${(s.n||s.t).replace(/\*\*/g,"").replace(/--+/g,"").trim()}</span></td>
+      <td><span class="tag ${catClass(s.cat)}">${s.cat}</span></td>
+      <td>
+        <div class="rb-wrap">
+          <div class="rb-track"><div class="rb-fill" style="width:${s.score}%;background:${barColor(s.tier)}"></div></div>
+          <span class="mono" style="color:${tc}">${s.score}</span>
+        </div>
+      </td>
+      <td><span class="tag ${tierClass(s.tier)}">${s.tier}-TIER</span></td>
+      <td><span class="${s.mom.startsWith('-')?'dn':'up'}" style="font-family:'Share Tech Mono',monospace;font-size:10px">${s.mom}</span></td>
+      <td><span class="mono w" id="price-${s.t}">${price}</span></td>
+      <td id="chg-${s.t}">${chgStr}</td>
+      <td style="text-align:left;padding-left:16px;font-size:10px;color:var(--muted);max-width:300px">${s.case}</td>
+    </tr>`;
+  }
+  tbody.innerHTML=html;
+}
+
+function buildCalcs(){
+  const grid=document.getElementById("calcGrid");
+  if(!grid)return;
+  let html="";
+  for(const c of CALCS){
+    const l=c.ticker?state.live[c.ticker]:null;
+    let liveHtml="";
+    if(c.ticker){
+      const price = l&&l.regularMarketPrice!=null ? "$"+Number(l.regularMarketPrice).toFixed(2) : "$—";
+      const chg = l&&l.regularMarketChangePercent!=null ? Number(l.regularMarketChangePercent) : null;
+      const chgStr = chg!=null ? (chg>=0?" ▲ +":"▼ ")+Math.abs(chg).toFixed(2)+"%" : "";
+      const liveColor = chg==null?"var(--c2)":(chg>=0?"var(--c3)":"var(--red)");
+      liveHtml=`<div class="calc-live" id="calc-live-${c.ticker}" style="color:${liveColor}">⚡ LIVE ${c.ticker}: ${price}${chgStr}</div>`;
+    }
+    let resultHtml=`<div class="calc-result" style="color:${c.color}">${c.result}<small>${c.sub}</small></div>`;
+    if(c.target&&c.ticker&&l&&l.regularMarketPrice!=null){
+      const lp=Number(l.regularMarketPrice);
+      const up=((c.target-lp)/lp*100);
+      const sign=up>=0?"+":"";
+      resultHtml=`<div class="calc-result" style="color:${up>=0?"var(--c3)":"var(--red)"}">${sign}${up.toFixed(1)}% UPSIDE<small style="color:var(--muted)">Live: $${lp.toFixed(2)} → mål $${c.target}</small></div>`;
+    }
+    html+=`<div class="calc-card" style="border-left-color:${c.color}">
+      <div class="calc-title" style="color:${c.color}">${c.title}</div>
+      <div class="calc-formula">${c.formula}</div>
+      ${resultHtml}${liveHtml}
+    </div>`;
+  }
+  grid.innerHTML=html;
+}
+
+function buildTiers(){
+  normalizeTop50Tiers();
+  const grid=document.getElementById("tierGrid");
+  if(!grid)return;
+  const tierDefs={
+    S:{tag:'gs',color:'var(--c1)',profile:'Direkte AI infra · Høj synlighed',investor:'MODERAT',conc:'Bedste risk/reward 2026 · Kernepositioner'},
+    A:{tag:'ga',color:'var(--c3)',profile:'Stærk AI eksponering · Konkret backlog',investor:'MODERAT',conc:'Solide vækstcases · Diversificeret AI infra'},
+    B:{tag:'gb',color:'var(--c2)',profile:'Indirekte AI infra · Solid position',investor:'AKTIV',conc:'Sekundære beneficiaries med solid fundamental'},
+    C:{tag:'gc',color:'var(--purple)',profile:'Spekulativ / indirekte eksponering',investor:'ERFAREN',conc:'High-risk eller svag AI eksponering'},
+    D:{tag:'gd2',color:'var(--gold)',profile:'Overpriced flagship / defensiv utility',investor:'SPECIFIK',conc:'Meget indirekte AI eksponering'},
+  };
+  let html="";
+  for(const tierKey of ['S','A','B','C','D']){
+    const members=TOP50.filter(s=>s.tier===tierKey);
+    if(!members.length)continue;
+    const def=tierDefs[tierKey];
+    const scores=members.map(s=>s.score);
+    const scoreRange=Math.min(...scores)+'–'+Math.max(...scores);
+    const tickerList=members.map(s=>{
+      const nm=(s.n||s.t).replace(/\*\*/g,'').replace(/--+/g,'').trim();
+      const badge=s.isNew?' <span style="font-size:7px;color:var(--c3);vertical-align:middle">NEW</span>':'';
+      return `<span style="cursor:pointer" onclick="openTV('${s.t}','${nm.replace(/'/g,"\'")}');" title="${nm}">${s.t}${badge}</span>`;
+    }).join(' · ');
+    html+=`<div class="tier-row">
+      <div><span class="tag ${def.tag}" style="font-size:15px;padding:5px 13px">${tierKey}-TIER</span>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:5px">${scoreRange} SCORE &middot; ${members.length} aktier</div>
+      </div>
+      <div><div class="tier-tickers">${tickerList}</div>
+        <div class="tier-desc">${def.profile} &middot; ${def.investor} investor</div>
+      </div>
+      <div class="tier-conc" style="color:${def.color}">${def.conc}</div>
+    </div>`;
+  }
+  grid.innerHTML=html;
+}
+
+function macroFmtPct(v){
+  if(!Number.isFinite(v))return "—";
+  return (v>=0?"+":"")+v.toFixed(2)+"%";
+}
+
+function macroLiveRows(){
+  return TOP50.map(s=>{
+    const l=state.live[s.t]||{};
+    const price=l.regularMarketPrice!=null?Number(l.regularMarketPrice):null;
+    const chg=l.regularMarketChangePercent!=null?Number(l.regularMarketChangePercent):null;
+    return {...s,livePrice:price,liveChange:chg};
+  }).filter(s=>Number.isFinite(s.livePrice));
+}
+
+function buildMacroLiveCards(){
+  const grid=document.getElementById("macroLiveGrid");
+  const status=document.getElementById("macroLiveStatus");
+  if(!grid)return;
+  const rows=macroLiveRows();
+  const withChange=rows.filter(s=>Number.isFinite(s.liveChange));
+  const total=TOP50.length;
+  const fetched=rows.length;
+  const pos=withChange.filter(s=>s.liveChange>=0).length;
+  const neg=withChange.filter(s=>s.liveChange<0).length;
+  const avgChg=withChange.length?withChange.reduce((a,s)=>a+s.liveChange,0)/withChange.length:null;
+  const avgScore=TOP50.length?TOP50.reduce((a,s)=>a+(Number(s.score)||0),0)/TOP50.length:null;
+  const breadth=withChange.length?(pos/withChange.length*100):null;
+  const topGain=withChange.length?[...withChange].sort((a,b)=>b.liveChange-a.liveChange)[0]:null;
+  const topLoss=withChange.length?[...withChange].sort((a,b)=>a.liveChange-b.liveChange)[0]:null;
+  const saCount=TOP50.filter(s=>s.tier==="S"||s.tier==="A").length;
+  const liveScore=Number.isFinite(avgScore)&&Number.isFinite(breadth)&&Number.isFinite(avgChg)
+    ? Math.max(0,Math.min(100,Math.round(avgScore*0.58+breadth*0.24+(50+Math.max(-10,Math.min(10,avgChg))*3)*0.18)))
+    : null;
+  const vrt=state.live.VRT;
+  const vrtPrice=vrt&&vrt.regularMarketPrice!=null?Number(vrt.regularMarketPrice):null;
+  const vrtTarget=(CALCS.find(c=>c.ticker==="VRT"&&c.target)||{}).target;
+  const vrtUpside=Number.isFinite(vrtPrice)&&vrtTarget?((vrtTarget-vrtPrice)/vrtPrice*100):null;
+  const ts=new Date().toLocaleTimeString("da-DK");
+  const cards=[
+    {cls:"b",label:"LIVE TICKERS HENTET",val:`${fetched}/${total}`,color:"var(--c2)",sub:`${state.liveMissing?.length||0} mangler · Yahoo proxy`},
+    {cls:"g",label:"AI INFRA BREADTH",val:Number.isFinite(breadth)?Math.round(breadth)+"%":"—",color:"var(--c3)",sub:`${pos} op · ${neg} ned · baseret på 1D ændring`},
+    {cls:"o",label:"GNS 1D LIVE MOMENTUM",val:macroFmtPct(avgChg),color:Number.isFinite(avgChg)&&avgChg>=0?"var(--c3)":"var(--red)",sub:"Gennemsnit af tickers med live 1D data"},
+    {cls:"g",label:"TOP LIVE VINDER",val:topGain?topGain.t:"—",color:"var(--c3)",sub:topGain?`${macroFmtPct(topGain.liveChange)} · ${topGain.n||topGain.t}`:"Afventer live ændring"},
+    {cls:"p",label:"TOP LIVE TABER",val:topLoss?topLoss.t:"—",color:"var(--red)",sub:topLoss?`${macroFmtPct(topLoss.liveChange)} · ${topLoss.n||topLoss.t}`:"Afventer live ændring"},
+    {cls:"gd",label:"S/A TIER BREADTH",val:`${saCount}/${total}`,color:"var(--gold)",sub:"Antal højest rangerede AI infra aktier"},
+    {cls:"b",label:"LIVE MAKRO SCORE",val:Number.isFinite(liveScore)?liveScore+"/100":"—",color:"var(--c2)",sub:"Score + breadth + 1D momentum"},
+    {cls:"o",label:"VRT TARGET UPSIDE",val:Number.isFinite(vrtUpside)?macroFmtPct(vrtUpside):"—",color:Number.isFinite(vrtUpside)&&vrtUpside>=0?"var(--c3)":"var(--red)",sub:Number.isFinite(vrtPrice)?`Live $${vrtPrice.toFixed(2)} → mål $${vrtTarget}`:"Afventer VRT live pris"}
+  ];
+  grid.innerHTML=cards.map(c=>`<div class="mc live ${c.cls}">
+    <div class="mc-lbl">${escHtml(c.label)}</div>
+    <div class="mc-val" style="color:${c.color}">${escHtml(c.val)}</div>
+    <div class="mc-sub">${escHtml(c.sub)}</div>
+  </div>`).join("");
+  if(status){
+    status.textContent=fetched?`Live udregnet ${ts} · ${fetched}/${total} tickers`:"Afventer live-data";
+    status.style.color=fetched?"var(--c3)":"var(--muted)";
+  }
+}
+
+async function updateMacroLiveCalculations(opts={}){
+  const btn=document.getElementById("btnMacroLive");
+  const status=document.getElementById("macroLiveStatus");
+  if(btn){btn.disabled=true;btn.classList.add("spinning");btn.textContent="⚡ HENTER LIVE…";}
+  if(status){status.textContent="Henter live-priser og genberegner…";status.style.color="var(--c2)";}
+  try{
+    if(opts.fetchFresh){
+      await updateLivePrices();
+      buildTop50(); buildStack(); buildCalcs(); buildTiers(); updateLiveUI();
+    }
+    buildMacroLiveCards();
+  }catch(e){
+    if(status){status.textContent="Fejl: "+e.message;status.style.color="var(--red)";}
+  }finally{
+    if(btn){btn.disabled=false;btn.classList.remove("spinning");btn.textContent="⚡ OPDATER LIVE UDREGNINGER";}
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIVE DATA
+═══════════════════════════════════════════════════════════════ */
+async function updateLivePrices(){
+  const allTickers=[...new Set([...TOP50.map(s=>s.t),...state.addedTickers])];
+  state.liveTotal=allTickers.length;
+  const BATCH=20;
+  let fetched=0, missing=[];
+
+  async function fetchBatch(batch){
+    try{
+      const url=`${API}/quotes?symbols=${batch.join(",")}`;
+      const res=await fetch(url);
+      const data=await res.json();
+      const results=data.results||[];
+      for(const r of results){
+        const sym=r.symbol||r.shortName;
+        const price=r.regularMarketPrice!=null?r.regularMarketPrice:null;
+        const chg=r.regularMarketChangePercent!=null?r.regularMarketChangePercent:null;
+        state.live[sym]={regularMarketPrice:price,regularMarketChangePercent:chg};
+        if(price!=null) fetched++;
+        else missing.push(sym);
+      }
+      const returned=new Set(results.map(r=>r.symbol));
+      for(const sym of batch){
+        if(!returned.has(sym)) missing.push(sym);
+      }
+    }catch(e){
+      console.warn("fetchBatch error:",e);
+      missing.push(...batch);
+    }
+    state.liveFetched=fetched;
+    state.liveMissing=missing;
+    updateLiveUI();
+  }
+
+  const jobs=[];
+  for(let i=0;i<allTickers.length;i+=BATCH){
+    jobs.push(fetchBatch(allTickers.slice(i,i+BATCH)));
+  }
+  await Promise.all(jobs);
+  updateLiveUI();
+  return {fetched, missing};
+}
+
+function updateLiveUI(){
+  const ts=new Date().toLocaleTimeString("da-DK");
+  const statusEl=document.getElementById("liveStatus");
+  if(statusEl){
+    statusEl.className="live-status on";
+    statusEl.textContent=`● LIVE: ${state.liveFetched}/${state.liveTotal} aktier · ${ts}`;
+  }
+  const navLive=document.getElementById("navLive");
+  if(navLive){
+    navLive.className="live-badge on";
+    navLive.textContent=`● ${state.liveFetched}/${state.liveTotal} LIVE`;
+  }
+  // Update top50 cells
+  for(const s of TOP50){
+    const l=state.live[s.t];
+    if(!l)continue;
+    const pEl=document.getElementById("price-"+s.t);
+    const cEl=document.getElementById("chg-"+s.t);
+    if(pEl&&l.regularMarketPrice!=null){
+      pEl.textContent="$"+Number(l.regularMarketPrice).toFixed(2);
+    }
+    if(cEl&&l.regularMarketChangePercent!=null){
+      const chg=Number(l.regularMarketChangePercent);
+      cEl.innerHTML=`<span class="${chg>=0?'up':'dn'}" style="font-family:'Share Tech Mono',monospace;font-size:10px">${chg>=0?'▲ +':'▼ '}${Math.abs(chg).toFixed(2)}%</span>`;
+    }
+  }
+  // Update calc live pills
+  for(const c of CALCS){
+    if(!c.ticker)continue;
+    const l=state.live[c.ticker];
+    const el=document.getElementById("calc-live-"+c.ticker);
+    if(el&&l&&l.regularMarketPrice!=null){
+      const chg=l.regularMarketChangePercent!=null?Number(l.regularMarketChangePercent):null;
+      const chgStr=chg!=null?(chg>=0?" ▲ +":"▼ ")+Math.abs(chg).toFixed(2)+"%":"";
+      el.textContent=`⚡ LIVE ${c.ticker}: $${Number(l.regularMarketPrice).toFixed(2)}${chgStr}`;
+      el.style.color=chg==null?"var(--c2)":(chg>=0?"var(--c3)":"var(--red)");
+    }
+  }
+  buildMacroLiveCards();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════════════════════════ */
+async function doSearch(){
+  const q=document.getElementById("searchInput").value.trim();
+  if(!q){alert("Skriv en søgeterm!");return;}
+  const btn=document.getElementById("btnSearch");
+  btn.disabled=true;
+  btn.textContent="🔍 SØGER…";
+  const res=document.getElementById("searchResults");
+  res.innerHTML=`<div class="search-msg">🔍 Søger Yahoo Finance for "${q}"…</div>`;
+  try{
+    const r=await fetch(`${API}/search?q=${encodeURIComponent(q)}`);
+    const data=await r.json();
+    if(!data.ok||!data.results||data.results.length===0){
+      res.innerHTML=`<div class="search-msg">Ingen resultater fundet for "${q}"</div>`;
+      return;
+    }
+    let html="";
+    for(const item of data.results){
+      if(!item.symbol)continue;
+      const alreadyAdded=state.addedTickers.includes(item.symbol)||TOP50.some(s=>s.t===item.symbol);
+      html+=`<div class="sr-item">
+        <span class="sr-ticker">${item.symbol}</span>
+        <span class="sr-name">${cleanStr(item.shortname)||"—"}</span>
+        <span class="sr-exch">${item.exchDisp||""} · ${item.typeDisp||""}</span>
+        ${alreadyAdded
+          ? `<span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted)">✓ TILFØJET</span>`
+          : `<button class="sr-add" onclick="addTicker('${item.symbol}','${(item.shortname||'').replace(/\*\*/g,'').replace(/--+/g,'').replace(/'/g,"\\'")}','${(item.typeDisp||'').replace(/'/g,"\\'")}')">+ TILFØJ</button>`
+        }
+      </div>`;
+    }
+    res.innerHTML=html;
+    // Also fetch live prices for results
+    const syms=data.results.map(r=>r.symbol).filter(Boolean).slice(0,15);
+    if(syms.length){
+      const liveRes=await fetch(`${API}/quotes?symbols=${syms.join(",")}`);
+      const liveData=await liveRes.json();
+      for(const r of (liveData.results||[])){
+        if(r.symbol&&r.regularMarketPrice!=null){
+          // Inject price into search result rows
+          const tickerEls=document.querySelectorAll(`.sr-item`);
+          for(const el of tickerEls){
+            const tkEl=el.querySelector(".sr-ticker");
+            if(tkEl&&tkEl.textContent===r.symbol){
+              const priceSpan=document.createElement("span");
+              priceSpan.style.cssText="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--c3);margin-right:4px;";
+              const chg=r.regularMarketChangePercent!=null?Number(r.regularMarketChangePercent):null;
+              priceSpan.textContent=`$${Number(r.regularMarketPrice).toFixed(2)}${chg!=null?(chg>=0?' ▲':' ▼')+Math.abs(chg).toFixed(2)+'%':''}`;
+              el.insertBefore(priceSpan,el.querySelector(".sr-add")||el.querySelector("span:last-child"));
+            }
+          }
+        }
+      }
+    }
+  }catch(e){
+    res.innerHTML=`<div class="search-msg" style="color:var(--red)">Fejl: ${e.message} — Er serveren kørende på port ${PORT}?</div>`;
+  }finally{
+    btn.disabled=false;
+    btn.textContent="🔍 SØG TICKERS";
+  }
+}
+
+function cleanStr(s){ return (s||'').replace(/\*+/g,'').replace(/--+/g,'').replace(/^[-_\s]+/,'').replace(/[-_\s]+$/,'').trim(); }
+
+function parseScoreValue(value, fallback=50){
+  if(value==null)return fallback;
+  if(typeof value==="number"&&Number.isFinite(value)){
+    return Math.min(100,Math.max(1,Math.round(value)));
+  }
+  const txt=String(value).replace(/,/g,'.');
+  const scoreMatch=txt.match(/score\s*[:=]?\s*(\d{1,3})/i);
+  const anyMatch=scoreMatch||txt.match(/(\d{1,3})(?:\s*\/\s*100|\s*pct|\s*%|\b)/i);
+  const n=anyMatch?parseInt(anyMatch[1],10):NaN;
+  return Number.isFinite(n)?Math.min(100,Math.max(1,n)):fallback;
+}
+
+function tierFromScore(score){
+  const n=parseScoreValue(score,50);
+  if(n>=85)return "S";
+  if(n>=65)return "A";
+  if(n>=45)return "B";
+  if(n>=30)return "C";
+  return "D";
+}
+
+function normalizeTierValue(value, score){
+  return tierFromScore(score);
+}
+
+function normalizeTop50Tiers(){
+  for(const s of TOP50){
+    s.score=parseScoreValue(s.score,50);
+    s.tier=tierFromScore(s.score);
+  }
+}
+
+function estimateAIInfraScore(entry={}, quote={}){
+  const text=[entry.t,entry.n,entry.cat,entry.case,quote.shortName,quote.longName,quote.sector,quote.industry,quote.quoteType]
+    .map(x=>String(x||"").toLowerCase()).join(" ");
+  let score=42;
+  if(/nvidia|gpu|accelerator|semiconductor|chip|asic|hbm|memory|foundry|wafer|lithography|eda|broadcom|amd|tsmc|asml/.test(text))score=82;
+  if(/data center|datacenter|colo|colocation|cloud|hpc|hosting|server|compute|reit/.test(text))score=Math.max(score,78);
+  if(/electric|power|grid|utility|nuclear|smr|energy|transformer|switchgear|ups|generator|renewable/.test(text))score=Math.max(score,74);
+  if(/cooling|thermal|hvac|liquid|mechanical|electrical|construction|epc|engineering|contractor|infrastructure/.test(text))score=Math.max(score,70);
+  if(/network|ethernet|optic|optical|fiber|transceiver|switch|router|connector|cable/.test(text))score=Math.max(score,72);
+  if(/storage|ssd|hdd|nand|disk|seagate|western digital/.test(text))score=Math.max(score,64);
+  if(/etf|fund/.test(text))score=Math.min(score,55);
+  if(/crypto|bitcoin/.test(text))score=Math.min(score,38);
+
+  const chg=quote.regularMarketChangePercent!=null?Number(quote.regularMarketChangePercent):null;
+  if(Number.isFinite(chg))score+=Math.max(-8,Math.min(8,chg/2));
+  return Math.min(100,Math.max(1,Math.round(score)));
+}
+
+function normalizeTickerEntry(raw, fallbackIsNew=false){
+  if(!raw)return null;
+  const sym=String(raw.t||raw.symbol||'').toUpperCase().replace(/[^A-Z0-9.\-]/g,'');
+  if(!sym||sym.length>16)return null;
+  let score=parseScoreValue(raw.score,50);
+  if(fallbackIsNew&&score===50)score=estimateAIInfraScore(raw);
+  const tier=normalizeTierValue(raw.tier,score);
+  return {
+    r:parseInt(raw.r)||0,
+    t:sym,
+    n:cleanStr(raw.n||raw.name||sym)||sym,
+    cat:cleanStr(raw.cat||'US AKTIE').toUpperCase().slice(0,40),
+    score,
+    tier,
+    mom:cleanStr(raw.mom||'').slice(0,80),
+    case:cleanStr(raw.case||'').slice(0,260),
+    isNew:!!(raw.isNew||fallbackIsNew)
+  };
+}
+
+function sortAndRankTop50(){
+  normalizeTop50Tiers();
+  TOP50.sort((a,b)=>b.score-a.score || a.t.localeCompare(b.t));
+  TOP50.forEach((s,i)=>s.r=i+1);
+}
+
+function persistedTickerPayload(){
+  normalizeTop50Tiers();
+  const added=[...new Set(state.addedTickers.map(s=>String(s).toUpperCase()))];
+  return {
+    tickers:TOP50.map(s=>({
+      r:s.r, t:s.t, n:s.n, cat:s.cat, score:s.score,
+      tier:s.tier, mom:s.mom, case:s.case, isNew:!!s.isNew
+    })),
+    addedTickers:added
+  };
+}
+
+async function loadTickerDatabase(){
+  try{
+    const r=await fetch(API+'/tickers');
+    const data=await r.json();
+    if(!data.ok)throw new Error(data.error||'Database kunne ikke hentes');
+
+    const addedSet=new Set((data.addedTickers||[]).map(s=>String(s).toUpperCase()));
+    let loaded=0;
+    for(const raw of (data.tickers||[])){
+      const entry=normalizeTickerEntry(raw, addedSet.has(String(raw.t||raw.symbol||'').toUpperCase()));
+      if(!entry)continue;
+      const idx=TOP50.findIndex(s=>s.t===entry.t);
+      if(idx===-1)TOP50.push(entry);
+      else TOP50[idx]={...TOP50[idx],...entry,isNew:entry.isNew||TOP50[idx].isNew};
+      loaded++;
+    }
+
+    state.addedTickers=[...new Set([
+      ...Array.from(addedSet),
+      ...TOP50.filter(s=>s.isNew).map(s=>s.t)
+    ])].filter(sym=>TOP50.some(s=>s.t===sym));
+
+    sortAndRankTop50();
+    state.dbLoaded=true;
+    return loaded;
+  }catch(e){
+    console.warn('Ticker database load failed:',e);
+    state.dbLoaded=true;
+    return 0;
+  }
+}
+
+async function saveTickerDatabase(){
+  if(!state.dbLoaded)return;
+  try{
+    await fetch(API+'/tickers/save',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(persistedTickerPayload())
+    });
+  }catch(e){
+    console.warn('Ticker database save failed:',e);
+  }
+}
+
+async function addTicker(sym, name, typeHint){
+  if(state.addedTickers.includes(sym)) return;
+  state.addedTickers.push(sym);
+
+  // Base category from typeHint
+  const th=cleanStr(typeHint).toUpperCase();
+  let cat='US AKTIE';
+  if(th.includes('ETF')||th.includes('FUND'))  cat='ETF';
+  else if(th.includes('CRYPTO'))               cat='CRYPTO';
+  else if(sym.includes('.'))                   cat='INTERNATIONAL';
+
+  // Insert placeholder immediately so table shows it
+  if(!TOP50.some(s=>s.t===sym)){
+    const initialScore=estimateAIInfraScore({t:sym,n:name,cat});
+    TOP50.push({r:0, t:sym, n:cleanStr(name)||sym, cat,
+      score:initialScore, tier:tierFromScore(initialScore), mom:'…', case:'Henter data…', isNew:true});
+    TOP50.sort((a,b)=>b.score-a.score);
+    TOP50.forEach((s,i)=>s.r=i+1);
+    buildTop50(); buildStack(); buildTiers();
+  }
+
+  // Fetch live quote + enrich name, momentum, sector from Yahoo
+  try{
+    const r=await fetch(API+'/quotes?symbols='+sym);
+    const data=await r.json();
+    for(const item of (data.results||[])){
+      if(item.symbol!==sym) continue;
+      state.live[sym]={regularMarketPrice:item.regularMarketPrice,regularMarketChangePercent:item.regularMarketChangePercent};
+
+      // Enrich the TOP50 entry with real Yahoo data
+      const entry=TOP50.find(s=>s.t===sym);
+      if(entry){
+        // Name from Yahoo (shortName/longName)
+        const yName=cleanStr(item.shortName||item.longName||name||sym);
+        if(yName) entry.n=yName;
+
+        // Momentum from 1D change
+        const chg=item.regularMarketChangePercent!=null?Number(item.regularMarketChangePercent):null;
+        if(chg!=null) entry.mom=(chg>=0?'+':'')+chg.toFixed(1)+'% (1D)';
+
+        // Category from Yahoo quoteType if available
+        const qt=(item.quoteType||'').toUpperCase();
+        if(qt==='ETF')             entry.cat='ETF';
+        else if(qt==='CRYPTOCURRENCY') entry.cat='CRYPTO';
+        else if(qt==='MUTUALFUND') entry.cat='FOND';
+        else if(item.currency&&item.currency!=='USD') entry.cat='INTERNATIONAL';
+
+        // AI infra case — use Yahoo sector + industry if available
+        const sector=cleanStr(item.sector||'');
+        const industry=cleanStr(item.industry||'');
+        if(sector||industry){
+          entry.case=(sector?sector+' · ':'')+(industry||'')+' · Kør AI Analyse for fuld vurdering';
+        } else {
+          entry.case='Tilføjet via søgning · Kør AI Analyse for score, tier og AI infra case';
+        }
+
+        const estimatedScore=estimateAIInfraScore(entry,item);
+        entry.score=estimatedScore;
+        entry.tier=tierFromScore(estimatedScore);
+      }
+    }
+  }catch(e){}
+
+  TOP50.sort((a,b)=>b.score-a.score);
+  TOP50.forEach((s,i)=>s.r=i+1);
+  buildTop50(); buildStack(); buildCalcs(); buildTiers(); renderAddedTickers(); updateLiveUI();
+  saveTickerDatabase();
+}
+
+function removeTicker(sym){
+  state.addedTickers=state.addedTickers.filter(t=>t!==sym);
+  delete state.live[sym];
+  // Also remove from TOP50 if it was manually added
+  const idx=TOP50.findIndex(s=>s.t===sym&&s.isNew);
+  if(idx!==-1){
+    TOP50.splice(idx,1);
+    TOP50.sort((a,b)=>b.score-a.score);
+    TOP50.forEach((s,i)=>s.r=i+1);
+    buildTop50();
+    buildStack();
+    buildCalcs();
+    buildTiers();
+  }
+  renderAddedTickers();
+  saveTickerDatabase();
+}
+
+function renderAddedTickers(){
+  const el=document.getElementById("addedTickers");
+  if(!el)return;
+  if(state.addedTickers.length===0){el.innerHTML="";return;}
+  let html="<div style='font-family:Share Tech Mono,monospace;font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:8px;width:100%'>TILFØJEDE TICKERS MED LIVE PRISER:</div>";
+  for(const sym of state.addedTickers){
+    const l=state.live[sym];
+    const price=l&&l.regularMarketPrice!=null?"$"+Number(l.regularMarketPrice).toFixed(2):"…";
+    const chg=l&&l.regularMarketChangePercent!=null?Number(l.regularMarketChangePercent):null;
+    const chgStr=chg!=null?(chg>=0?" ▲ +":"▼ ")+Math.abs(chg).toFixed(2)+"%":"";
+    const color=chg==null?"var(--c2)":(chg>=0?"var(--c3)":"var(--red)");
+    html+=`<div class="added-chip">
+      <span style="font-family:Orbitron,monospace;font-weight:800;cursor:pointer;text-decoration:underline dotted" onclick="openTV('${sym}','')" title="Vis chart">${sym}</span>
+      <span style="color:${color}">${price}${chgStr}</span>
+      <button onclick="removeTicker('${sym}')" title="Fjern">✕</button>
+    </div>`;
+  }
+  el.innerHTML=html;
+}
+
+function getAddedTop50Entries(){
+  const seen=new Set();
+  const entries=[];
+  for(const sym of state.addedTickers){
+    const entry=TOP50.find(s=>s.t===sym);
+    if(entry&&!seen.has(entry.t)){entries.push(entry);seen.add(entry.t);}
+  }
+  for(const entry of TOP50.filter(s=>s.isNew)){
+    if(!seen.has(entry.t)){entries.push(entry);seen.add(entry.t);}
+  }
+  return entries;
+}
+
+function parseAIInfraTickerLines(rawText){
+  const blockStart=rawText.indexOf('AI_TICKERS_START');
+  const blockEnd=rawText.indexOf('AI_TICKERS_SLUT');
+  const body=blockStart!==-1&&blockEnd!==-1
+    ? rawText.slice(blockStart+'AI_TICKERS_START'.length,blockEnd)
+    : rawText;
+  return body.split('\n')
+    .map(l=>l.trim())
+    .filter(l=>l.includes('|')&&!l.startsWith('//')&&!l.startsWith('['))
+    .map(line=>{
+      const parts=line.split('|').map(p=>p.replace(/[*_`]/g,'').trim());
+      if(parts.length<7)return null;
+      const sym=parts[0].toUpperCase().replace(/[^A-Z0-9.\-]/g,'');
+      const score=parseScoreValue(parts[3],estimateAIInfraScore({t:sym,n:parts[1],cat:parts[2],case:parts.slice(6).join(' ')}));
+      return {
+        sym,
+        name:parts[1]||sym,
+        cat:(parts[2]||'AI INFRA').toUpperCase().slice(0,20),
+        score,
+        tier:normalizeTierValue(parts[4],score),
+        mom:parts[5]||'AI vurderet',
+        caseText:(parts.slice(6).join(' ')||'AI infra case opdateret').slice(0,160)
+      };
+    })
+    .filter(Boolean);
+}
+
+async function enrichAddedTickersWithAI(){
+  const entries=getAddedTop50Entries();
+  if(entries.length===0)return {updated:0, skipped:true};
+
+  const liveContext=entries.map(s=>{
+    const l=state.live[s.t];
+    const price=l&&l.regularMarketPrice!=null?' $'+Number(l.regularMarketPrice).toFixed(2):'';
+    const chg=l&&l.regularMarketChangePercent!=null?' '+Number(l.regularMarketChangePercent).toFixed(2)+'% 1D':'';
+    return `${s.t}|${s.n}|${s.cat}|Score ${s.score}|Tier ${s.tier}|${s.mom||''}|${s.case||''}${price}${chg}`;
+  }).join('\n');
+
+  const prompt=`Du er en AI infrastruktur investerings-analyst specialiseret i datacenter, strøm, køling, netværk, elnet, energi, nuclear/SMR, fiber, storage, semicap og compute.
+
+OPGAVE:
+Gennemgå ALLE disse tilføjede tickers og opdater deres AI infra case, kategori, score, tier og momentum til brug i sektionen // TIER SCORE.
+
+TICKERS:
+${liveContext}
+
+Returner KUN dette format:
+AI_TICKERS_START
+TICKER|Fuldt selskabsnavn|KATEGORI MED STORE BOGSTAVER|Score som heltal 1-100|Tier S A B C eller D|Momentum kort|Kort AI infra case på dansk max 140 tegn
+AI_TICKERS_SLUT
+
+Scoring:
+S 80-100: Direkte kritisk AI infra, stærk backlog/moat
+A 60-79: Stærk eksponering, konkret vækst
+B 45-59: Indirekte men solid
+C 30-44: Spekulativ eller svagere eksponering
+D 1-29: Meget indirekte eller lav AI infra relevans`;
+
+  const response=await fetch(API+'/ai',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      apiKey:'',
+      model:'claude-sonnet-4-5',
+      max_tokens:2200,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const data=await response.json();
+  if(!data.ok)throw new Error(data.error||'AI enrichment fejlede');
+
+  const result=data.result||{};
+  const rawText=(result.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+  const updates=parseAIInfraTickerLines(rawText);
+  let updated=0;
+  for(const u of updates){
+    const entry=TOP50.find(s=>s.t===u.sym);
+    if(!entry)continue;
+    entry.n=cleanStr(u.name)||entry.n;
+    entry.cat=u.cat;
+    entry.score=u.score;
+    entry.tier=tierFromScore(u.score);
+    entry.mom=u.mom;
+    entry.case=u.caseText;
+    entry.isNew=true;
+    if(!state.addedTickers.includes(entry.t))state.addedTickers.push(entry.t);
+    updated++;
+  }
+  TOP50.sort((a,b)=>b.score-a.score);
+  TOP50.forEach((s,i)=>s.r=i+1);
+  saveTickerDatabase();
+  return {updated, skipped:false};
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AI ANALYSE (Claude API)
+═══════════════════════════════════════════════════════════════ */
+async function doAIAnalysis(){
+  const q=document.getElementById("searchInput").value.trim();
+  if(!q){alert("Skriv et søgeterm eller aktienavn til analyse!");return;}
+  const btn=document.getElementById("btnAI");
+  btn.disabled=true; btn.textContent="🤖 ANALYSERER…";
+  const resEl=document.getElementById("aiResult");
+  resEl.innerHTML=`<div class="ai-thinking">🤖 AI SCANNER ANALYSERER "${q.toUpperCase()}"…</div>`;
+
+  const existingTickers=TOP50.map(s=>s.t).join(', ');
+  const liveContext=TOP50.slice(0,10).map(s=>{
+    const l=state.live[s.t];
+    return `${s.t} (${s.n}): Score ${s.score}/100, Tier ${s.tier}${l&&l.regularMarketPrice!=null?', $'+Number(l.regularMarketPrice).toFixed(2):''}`;
+  }).join('\n');
+
+  const prompt=`Du er en AI infrastruktur investerings-analyst specialiseret i datacenter, strøm, køling, netværk og compute. Brugeren søger: "${q}".
+
+EKSISTERENDE TICKERS I DATABASEN (tilføj IKKE disse igen):
+${existingTickers}
+
+TOP 10 AKTUELLE PRISER FOR REFERENCE:
+${liveContext}
+
+OPGAVE: Analyser "${q}" og returner svar i NØJAGTIGT dette format — ingen afvigelser:
+
+ANALYSE_START
+[Skriv 3-5 sætninger på dansk om emnet: hvad er AI infrastruktur casen, hvilke segmenter er relevante, og hvad er investerings-perspektivet]
+ANALYSE_SLUT
+
+NYE_TICKERS_START
+[For HVER relevant ticker der IKKE allerede er i databasen, skriv EN linje i dette format:]
+TICKER|Fuldt selskabsnavn|KATEGORI MED STORE BOGSTAVER|Score som heltal 1-100|Tier som ét bogstav S A B C eller D|Momentum fx +30pct eller Stabil|Kort AI infra case på dansk max 120 tegn
+[Skriv INGEN hvis der ikke er nye relevante tickers]
+NYE_TICKERS_SLUT
+
+REGLER FOR SCORING:
+S-tier 80-100: Direkte kritisk AI infra, høj backlog, stærkt momentum
+A-tier 60-79: Stærk eksponering, konkret vækst
+B-tier 45-59: Indirekte men solid
+C-tier 30-44: Spekulativ eller svag eksponering  
+D-tier 1-29: Meget indirekte
+
+Find gerne 2-5 nye tickers hvis de er relevante for AI infrastruktur.`;
+
+  try{
+    const response=await fetch(API+'/ai',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        apiKey:'',
+        model:'claude-sonnet-4-5',
+        max_tokens:1800,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await response.json();
+    if(!data.ok)throw new Error(data.error||'Ukendt fejl');
+    const result=data.result||{};
+    const rawText=(result.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+    if(!rawText){resEl.innerHTML=`<div class="search-msg" style="color:var(--muted)">AI returnerede intet svar.</div>`;return;}
+
+    // ── Parse structured response ────────────────────────────────
+    const getSection=(text,startTag,endTag)=>{
+      const s=text.indexOf(startTag);
+      const e=text.indexOf(endTag);
+      if(s===-1||e===-1)return '';
+      return text.slice(s+startTag.length,e).trim();
+    };
+
+    const analysisPart = getSection(rawText,'ANALYSE_START','ANALYSE_SLUT')
+      || rawText.split('NYE_TICKERS_START')[0].replace(/ANALYSE_START/g,'').trim();
+
+    const tickerRaw = getSection(rawText,'NYE_TICKERS_START','NYE_TICKERS_SLUT')
+      || (rawText.split('NYE_TICKERS_START')[1]||'').replace(/NYE_TICKERS_SLUT/g,'').trim();
+
+    // ── Add new tickers to database ──────────────────────────────
+    const newlyAdded=[];
+    if(tickerRaw && !/^INGEN/i.test(tickerRaw.trim())){
+      const lines=tickerRaw.split('\n')
+        .map(l=>l.trim())
+        .filter(l=>l.includes('|') && !l.startsWith('//') && !l.startsWith('['));
+
+      for(const line of lines){
+        const parts=line.split('|').map(p=>p.replace(/[*_`]/g,'').trim());
+        if(parts.length<6)continue;
+
+        const sym   = parts[0].toUpperCase().replace(/[^A-Z0-9.\-]/g,'');
+        const name  = parts[1]||sym;
+        const cat   = (parts[2]||'AI OPDAGET').toUpperCase().slice(0,20);
+        const score = parseScoreValue(parts[3],estimateAIInfraScore({t:sym,n:name,cat,case:parts.slice(6).join(' ')}));
+        const tier  = normalizeTierValue(parts[4],score);
+        const mom   = parts[5]||'Ny';
+        const caseText=(parts.slice(6).join(' ')||'AI-opdaget via søgning · '+q).slice(0,140);
+
+        if(!sym||sym.length<1||sym.length>8)continue;
+        if(TOP50.some(s=>s.t===sym))continue; // already in DB
+
+        const entry={r:0, t:sym, n:name, cat, score, tier, mom,
+                     case:caseText, isNew:true};
+        TOP50.push(entry);
+        newlyAdded.push(entry);
+      }
+
+      if(newlyAdded.length>0){
+        // Sort all by score, renumber
+        TOP50.sort((a,b)=>b.score-a.score);
+        TOP50.forEach((s,i)=>s.r=i+1);
+        // Rebuild every view
+        buildTop50();
+        buildStack();
+        buildCalcs();
+        buildTiers();
+        updateLivePrices();
+        // fetch live prices for new tickers
+        const newSyms=newlyAdded.map(e=>e.t).join(',');
+        fetch(API+'/quotes?symbols='+newSyms)
+          .then(r=>r.json())
+          .then(d=>{
+            for(const item of (d.results||[])){
+              if(item.symbol&&item.regularMarketPrice!=null){
+                state.live[item.symbol]={
+                  regularMarketPrice:item.regularMarketPrice,
+                  regularMarketChangePercent:item.regularMarketChangePercent
+                };
+              }
+            }
+            updateLiveUI();
+          }).catch(()=>{});
+        saveTickerDatabase();
+      }
+    }
+
+    // ── Clean and render analysis text ───────────────────────────
+    const cleanText = analysisPart
+      .replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.*?)\*\*/g,'$1')
+      .replace(/\*(.*?)\*/g,'$1')
+      .replace(/--+/g,'·')
+      .replace(/#{1,4}\s*/g,'')
+      .replace(/\n{3,}/g,'\n\n')
+      .replace(/\n/g,'<br>');
+
+    let html=`<div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--c1);letter-spacing:2px;margin-bottom:8px;">🤖 AI ANALYSE: "${q.toUpperCase()}"</div>`;
+    html+=`<div class="ai-analysis">${cleanText}</div>`;
+
+    if(newlyAdded.length>0){
+      html+=`<div style="margin-top:14px;padding:14px 18px;background:rgba(57,255,20,.06);border:1px solid rgba(57,255,20,.3);border-left:3px solid var(--c3);">`;
+      html+=`<div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--c3);letter-spacing:2px;margin-bottom:12px;">✓ ${newlyAdded.length} NY${newlyAdded.length>1?'E':''} TICKER${newlyAdded.length>1?'S':''} TILFØJET TIL DATABASEN</div>`;
+      for(const e of newlyAdded){
+        const tc={S:'var(--c1)',A:'var(--c3)',B:'var(--c2)',C:'var(--purple)',D:'var(--gold)'}[e.tier]||'var(--muted)';
+        html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(0,0,0,.3);border:1px solid var(--border);margin-bottom:6px;">
+          <span style="font-family:Orbitron,monospace;font-size:14px;font-weight:900;color:${tc};cursor:pointer;min-width:60px"
+                onclick="openTV('${e.t}','${e.n.replace(/'/g,"\'")}')"
+                title="Åbn TradingView chart">${e.t}</span>
+          <span style="flex:1;font-family:'Share Tech Mono',monospace;font-size:10px;color:#e2e8f0;">${e.n}</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(0,0,0,.4);border:1px solid var(--border);color:${tc}">${e.cat}</span>
+          <span style="font-family:Orbitron,monospace;font-size:11px;font-weight:700;color:${tc}">${e.tier}</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted)">Score ${e.score} · Rank #${e.r}</span>
+        </div>`;
+        html+=`<div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);padding:0 10px 8px;line-height:1.6;">${e.case}</div>`;
+      }
+      html+=`<div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:6px;">↑ Tickers er tilføjet til TOP 50, Kategori, Tier og Ranking · Klik ticker for TradingView chart</div>`;
+      html+=`</div>`;
+    }
+
+    resEl.innerHTML=html;
+    if(newlyAdded.length>0) setTimeout(()=>scrollTo('#s-top50'),400);
+
+  }catch(e){
+    resEl.innerHTML=`<div class="search-msg" style="color:var(--red)">❌ AI fejl: ${e.message}<br><span style="color:var(--muted);font-size:9px">Tjek at serveren kører · Gem API-nøgle via ⚙ Indstillinger</span></div>`;
+  }finally{
+    btn.disabled=false; btn.textContent="🤖 AI ANALYSE";
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REFRESH ALL DATA
+═══════════════════════════════════════════════════════════════ */
+async function refreshAllData(){
+  const btn=document.getElementById('btnRefresh');
+  if(btn){btn.classList.add('spinning');btn.textContent='⟳ HENTER…';}
+  const aiEl=document.getElementById('aiResult');
+
+  // Clear all live state
+  state.live={};
+  state.liveFetched=0;
+  state.liveTotal=0;
+  state.liveMissing=[];
+
+  // Re-fetch all tickers
+  await updateLivePrices();
+
+  // Re-enrich any manually added tickers
+  for(const sym of state.addedTickers){
+    try{
+      const r=await fetch(API+'/quotes?symbols='+sym);
+      const data=await r.json();
+      for(const item of (data.results||[])){
+        if(item.symbol!==sym) continue;
+        state.live[sym]={regularMarketPrice:item.regularMarketPrice,regularMarketChangePercent:item.regularMarketChangePercent};
+        const entry=TOP50.find(s=>s.t===sym&&s.isNew);
+        if(entry){
+          const yName=cleanStr(item.shortName||item.longName||'');
+          if(yName) entry.n=yName;
+          const chg=item.regularMarketChangePercent!=null?Number(item.regularMarketChangePercent):null;
+          if(chg!=null) entry.mom=(chg>=0?'+':'')+chg.toFixed(1)+'% (1D)';
+          const estimatedScore=estimateAIInfraScore(entry,item);
+          entry.score=estimatedScore;
+          entry.tier=tierFromScore(estimatedScore);
+        }
+      }
+    }catch(e){}
+  }
+
+  let aiStatus=null;
+  const addedEntries=getAddedTop50Entries();
+  if(addedEntries.length>0){
+    if(btn)btn.textContent='⟳ AI SCANNER…';
+    if(aiEl){
+      aiEl.innerHTML=`<div class="ai-thinking">🤖 Gennemsøger AI infra case for ${addedEntries.length} tilføjede ticker${addedEntries.length>1?'s':''} i // TIER SCORE…</div>`;
+    }
+    try{
+      aiStatus=await enrichAddedTickersWithAI();
+    }catch(e){
+      aiStatus={updated:0,error:e.message};
+    }
+  }
+
+  buildTop50(); buildStack(); buildCalcs(); buildTiers(); updateLiveUI(); renderAddedTickers();
+  saveTickerDatabase();
+  if(aiEl&&aiStatus){
+    if(aiStatus.error){
+      aiEl.innerHTML=`<div class="search-msg" style="color:var(--gold)">Live-priser er opdateret, men AI infra case blev ikke kørt:<br><span style="color:var(--muted);font-size:9px">${aiStatus.error}</span></div>`;
+    }else if(aiStatus.updated>0){
+      aiEl.innerHTML=`<div class="search-msg" style="color:var(--c3)">✓ AI infra case opdateret for ${aiStatus.updated} tilføjede ticker${aiStatus.updated>1?'s':''} i // TIER SCORE.</div>`;
+    }
+  }
+  if(btn){btn.classList.remove('spinning');btn.textContent='⟳ OPDATER';}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL NAV
+═══════════════════════════════════════════════════════════════ */
+function scrollTo(id){
+  const el=document.querySelector(id);
+  if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+  document.querySelectorAll(".nav-link").forEach(l=>l.classList.remove("active"));
+}
+
+document.getElementById("searchInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") doSearch();
+});
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+async function initApp(){
+  const loaded=await loadTickerDatabase();
+  buildTop50();
+  buildStack();
+  buildCalcs();
+  buildTiers();
+  buildMacroLiveCards();
+  renderAddedTickers();
+  if(!loaded) saveTickerDatabase();
+  updateLivePrices();
+  setInterval(updateLivePrices, 90000); // refresh every 90s
+}
+initApp();
+
+/* ════════════════════════════════════════════════════════════
+   SETTINGS — API KEYS
+════════════════════════════════════════════════════════════ */
+async function loadKeyStatus(){
+  try{
+    const r=await fetch(API+'/keys/status');
+    const d=await r.json();
+    const fhEl=document.getElementById('fhStatus');
+    if(fhEl){fhEl.textContent=d.finnhub_set?(d.finnhub_masked||'SAT ✓'):'IKKE SAT';fhEl.className='st-badge '+(d.finnhub_set?'st-ok':'st-no');}
+    const antEl=document.getElementById('antStatus');
+    if(antEl){antEl.textContent=d.anthropic_set?(d.anthropic_masked||'SAT ✓'):'IKKE SAT';antEl.className='st-badge '+(d.anthropic_set?'st-ok':'st-no');}
+    const rate=d.rate||{};
+    if(rate.limit){
+      const pct=Math.round((rate.calls_last_60s/rate.limit)*100);
+      const fill=document.getElementById('rateFill');
+      const num=document.getElementById('rateNum');
+      if(fill){fill.style.width=pct+'%';fill.style.background=pct>85?'var(--red)':pct>55?'var(--c1)':'var(--c3)';}
+      if(num)num.textContent=rate.calls_last_60s+'/'+rate.limit;
+    }
+  }catch(e){}
+}
+function openSettings(){document.getElementById('settingsOverlay').classList.add('open');loadKeyStatus();}
+function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');}
+function closeSettingsIfBg(e){if(e.target===document.getElementById('settingsOverlay'))closeSettings();}
+async function saveKeys(){
+  const fh=(document.getElementById('fhKeyInput')||{value:''}).value.trim();
+  const ant=(document.getElementById('antKeyInput')||{value:''}).value.trim();
+  const msg=document.getElementById('settingsMsg');
+  if(!fh&&!ant){msg.textContent='Ingen nøgler indtastet.';msg.style.color='var(--red)';return;}
+  msg.textContent='Gemmer…';msg.style.color='var(--muted)';
+  try{
+    const r=await fetch(API+'/keys/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({finnhub:fh,anthropic:ant})});
+    const d=await r.json();
+    if(d.ok){
+      msg.textContent='✓ Nøgler gemt i api_keys.json';msg.style.color='var(--c3)';
+      if(fh)document.getElementById('fhKeyInput').value='';
+      if(ant)document.getElementById('antKeyInput').value='';
+      loadKeyStatus();
+    }else{msg.textContent='Fejl: '+(d.error||'ukendt');msg.style.color='var(--red)';}
+  }catch(e){msg.textContent='❌ Serverfejl: '+e.message;msg.style.color='var(--red)';}
+}
+setTimeout(loadKeyStatus,1800);
+setInterval(loadKeyStatus,30000);
+
+
+/* ════════════════════════════════════════════════════════════
+   TRADINGVIEW CHART MODAL
+   1W chart med RSI, MACD, ROC, Volume
+════════════════════════════════════════════════════════════ */
+function openTV(ticker, name){
+  const overlay=document.getElementById('tvOverlay');
+  const label  =document.getElementById('tvTickerLabel');
+  const nlabel =document.getElementById('tvNameLabel');
+  const plabel =document.getElementById('tvPriceLabel');
+  const newBadge=document.getElementById('tvNewBadge');
+  const wrap   =document.getElementById('tvFrameWrap');
+
+  label.textContent  = ticker;
+  nlabel.textContent = name||'';
+
+  // Live price
+  const l=state.live[ticker];
+  if(l&&l.regularMarketPrice!=null){
+    const chg=l.regularMarketChangePercent!=null?Number(l.regularMarketChangePercent):null;
+    const chgStr=chg!=null?(chg>=0?' ▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%':'';
+    plabel.textContent='$'+Number(l.regularMarketPrice).toFixed(2)+chgStr;
+    plabel.style.color=chg==null?'#fff':(chg>=0?'var(--c3)':'var(--red)');
+  } else {
+    plabel.textContent='';
+  }
+
+  // New badge
+  const entry=TOP50.find(s=>s.t===ticker);
+  newBadge.style.display=(entry&&entry.isNew)?'inline':'none';
+
+  // Build TradingView widget HTML
+  // Use advanced chart with studies: RSI, MACD, ROC, Volume
+  const tvSymbol = ticker.includes('.')?ticker.replace('.',':'):ticker;
+  wrap.innerHTML=`<iframe
+    src="https://www.tradingview.com/widgetembed/?frameElementId=tv_chart_${ticker}&symbol=${encodeURIComponent(tvSymbol)}&interval=W&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=070d1a&studies=RSI%40tv-basicstudies%1FMACD%40tv-basicstudies%1FMomentum%40tv-basicstudies%1FVolume%40tv-basicstudies&theme=dark&style=1&timezone=Europe%2FCopenhagen&withdateranges=1&showpopupbutton=1&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=localhost"
+    style="width:100%;height:100%;border:none;"
+    allowtransparency="true"
+    scrolling="no"
+    allowfullscreen="">
+  </iframe>`;
+
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeTV(){
+  document.getElementById('tvOverlay').classList.remove('open');
+  document.getElementById('tvFrameWrap').innerHTML=''; // stop iframe
+  document.body.style.overflow='';
+}
+function closeTVIfBg(e){
+  if(e.target===document.getElementById('tvOverlay'))closeTV();
+}
+// ESC key closes chart
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTV();});
+
+</script>
+
+<!-- SETTINGS TOGGLE BUTTON -->
+<button class="settings-toggle" onclick="openSettings()">⚙ INDSTILLINGER</button>
+
+<!-- SETTINGS OVERLAY -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsIfBg(event)">
+  <div class="settings-box">
+    <button class="settings-close" onclick="closeSettings()">✕</button>
+    <div class="settings-h">⚙ API INDSTILLINGER</div>
+    <div class="settings-sub">
+      Nøgler gemmes lokalt på din server i <code>api_keys.json</code> — aldrig sendt til 3. part.<br>
+      Finnhub: maks 59 kald/min · Anthropic: bruges til AI-analyse
+    </div>
+
+    <div class="settings-field">
+      <div class="settings-label">
+        FINNHUB API-NØGLE
+        <span class="status status-no" id="fhStatus">IKKE SAT</span>
+      </div>
+      <input class="settings-input" id="fhKeyInput" type="password"
+             placeholder="Indsæt din Finnhub API-nøgle: xxxxxxxxxxxxxxxxxxxxxxx"/>
+      <div class="rate-bar-wrap" id="rateBarWrap" style="display:none">
+        <span class="rate-label">KALD/MIN</span>
+        <div class="rate-bar-track"><div class="rate-bar-fill" id="rateBarFill" style="width:0%"></div></div>
+        <span class="rate-label" id="rateLabel">0/59</span>
+      </div>
+    </div>
+
+    <div class="settings-field">
+      <div class="settings-label">
+        ANTHROPIC API-NØGLE <span style="font-size:8px;opacity:.6">(til AI analyse)</span>
+        <span class="st-badge st-no" id="antStatus">IKKE SAT</span>
+      </div>
+      <input class="settings-input" id="antKeyInput" type="password"
+             placeholder="sk-ant-... (eller sæt i start_windows.bat)"/>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-top:5px;line-height:1.6;">
+        Alternativt: åbn <strong style="color:var(--c2)">start_windows.bat</strong> i Notepad og indsæt nøglen ved <code>DIN_NOGLE_HER</code>
+      </div>
+    </div>
+
+    <button class="btn-save-keys" onclick="saveKeys()">💾 GEM NØGLER PÅ SERVEREN</button>
+    <div class="settings-msg" id="settingsMsg"></div>
+  </div>
+</div>
+
+
+<!-- SETTINGS BUTTON -->
+<button class="settings-toggle" onclick="openSettings()">⚙ INDSTILLINGER</button>
+
+<!-- SETTINGS OVERLAY -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsIfBg(event)">
+  <div class="settings-box">
+    <button class="settings-close" onclick="closeSettings()">&#x2715;</button>
+    <div class="settings-h">&#x2699; API INDSTILLINGER</div>
+    <div class="settings-sub">
+      Nøgler gemmes lokalt i <strong style="color:var(--c2)">api_keys.json</strong> ved siden af server.py.<br>
+      Aldrig sendt til 3. part. Finnhub: maks 59 kald/min (automatisk rate-limiting).
+    </div>
+
+    <div class="settings-field">
+      <div class="settings-label">
+        FINNHUB API-NØGLE
+        <span class="st-badge st-no" id="fhStatus">IKKE SAT</span>
+      </div>
+      <input class="settings-input" id="fhKeyInput" type="password"
+             placeholder="Indsæt Finnhub API-nøgle (finnhub.io/dashboard)"/>
+      <div class="rate-wrap" id="rateWrap">
+        <span class="rate-lbl">KALD SENESTE MIN</span>
+        <div class="rate-track"><div class="rate-fill" id="rateFill" style="width:0%"></div></div>
+        <span class="rate-lbl" id="rateNum">0/59</span>
+      </div>
+    </div>
+
+
+    <button class="btn-save-keys" onclick="saveKeys()">&#x1F4BE; GEM NØGLER P&#xC5; SERVEREN</button>
+    <div class="settings-msg" id="settingsMsg"></div>
+  </div>
+</div>
+
+
+<!-- TRADINGVIEW CHART MODAL -->
+<div class="tv-overlay" id="tvOverlay" onclick="closeTVIfBg(event)">
+  <div class="tv-box">
+    <div class="tv-header">
+      <span class="tv-ticker-label" id="tvTickerLabel">—</span>
+      <span class="tv-name-label" id="tvNameLabel"></span>
+      <span class="tv-price-label" id="tvPriceLabel"></span>
+      <span class="tv-new-badge" id="tvNewBadge" style="display:none">NY TILFØJET</span>
+      <button class="tv-close" onclick="closeTV()">&#x2715;</button>
+    </div>
+    <div class="tv-indicators">
+      <span class="tv-ind-badge tv-ind-rsi">RSI 14</span>
+      <span class="tv-ind-badge tv-ind-macd">MACD 12/26/9</span>
+      <span class="tv-ind-badge tv-ind-roc">ROC 12</span>
+      <span class="tv-ind-badge tv-ind-vol">VOLUME</span>
+      <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-left:8px;align-self:center;">1W CHART · KLIK TICKER I TABELLEN</span>
+    </div>
+    <div class="tv-frame-wrap" id="tvFrameWrap"></div>
+  </div>
+</div>
+
+</body>
+</html>

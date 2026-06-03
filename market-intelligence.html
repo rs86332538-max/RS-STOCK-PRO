@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Intel — Live Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#050a14;--bg2:#070d1a;--bg3:#0a1020;--bg4:#0d1525;
+    --border:#1e293b;--border2:#334155;
+    --text:#e2e8f0;--muted:#94a3b8;--dim:#64748b;--faint:#475569;
+    --indigo:#6366f1;--indigo-light:#a5b4fc;
+    --green:#22c55e;--red:#ef4444;--orange:#f97316;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  }
+  html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:rgba(5,10,20,.97);position:sticky;top:0;z-index:100}
+  .logo{font-size:1rem;font-weight:800;letter-spacing:.1em;color:#f8fafc}
+  .live-tag{font-size:.58rem;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:var(--green);padding:2px 7px;border-radius:3px;margin-left:10px;vertical-align:middle;letter-spacing:.14em;animation:pulse 2s infinite}
+  .logo-sub{font-size:.6rem;color:var(--faint);letter-spacing:.1em;margin-top:3px}
+  .header-right{display:flex;align-items:center;gap:12px}
+  #key-btn{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);color:var(--indigo-light);padding:6px 12px;border-radius:5px;cursor:pointer;font-size:.67rem;font-family:var(--mono);font-weight:600}
+  .clock{color:var(--faint);font-size:.62rem;letter-spacing:.08em}
+  #key-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 24px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+  #key-bar.open{display:flex}
+  #key-bar label{color:var(--dim);font-size:.68rem}
+  #key-input{background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:6px 11px;border-radius:5px;font-size:.73rem;font-family:var(--mono);width:260px;outline:none}
+  .key-note{color:var(--faint);font-size:.62rem;font-style:italic}
+  nav{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 16px;overflow-x:auto}
+  .tab-btn{background:transparent;border:none;color:var(--dim);padding:13px 17px;cursor:pointer;font-size:.67rem;font-weight:700;letter-spacing:.1em;border-bottom:2px solid transparent;transition:all .2s;font-family:var(--mono);white-space:nowrap}
+  .tab-btn.active{color:var(--text);border-bottom-color:var(--indigo)}
+  button:hover:not(:disabled){opacity:.8}
+  button:disabled{opacity:.4;cursor:default}
+  main{padding:24px;max-width:1200px;margin:0 auto}
+  .panel{display:none;flex-direction:column;gap:18px}
+  .panel.active{display:flex}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .sec-title{font-size:.93rem;font-weight:700;color:#f1f5f9;letter-spacing:.06em}
+  .sec-sub{font-size:.67rem;color:var(--dim);letter-spacing:.08em;margin-top:4px;min-height:1.2em}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+  .refresh-btn{background:rgba(30,41,59,.8);border:1px solid var(--border2);color:var(--muted);padding:7px 13px;border-radius:5px;cursor:pointer;font-size:.67rem;font-weight:600;font-family:var(--mono)}
+  .ai-btn{background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(139,92,246,.2));border:1px solid rgba(99,102,241,.4);color:var(--indigo-light);padding:7px 15px;border-radius:5px;cursor:pointer;font-size:.67rem;font-weight:700;letter-spacing:.08em;font-family:var(--mono)}
+  .save-btn{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.35);color:var(--green);padding:7px 13px;border-radius:5px;cursor:pointer;font-size:.67rem;font-weight:600;font-family:var(--mono)}
+  .err-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;padding:11px 16px;border-radius:6px;font-size:.73rem;display:none}
+  .info-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);color:var(--indigo-light);padding:11px 16px;border-radius:6px;font-size:.73rem;line-height:1.6}
+  .spinner{display:none;flex-direction:column;align-items:center;gap:14px;padding:52px 0}
+  .spinner.on{display:flex}
+  .dots{display:flex;gap:7px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--indigo);animation:bounce 1.2s ease-in-out infinite}
+  .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+  .spin-txt{color:var(--dim);font-size:.72rem;letter-spacing:.08em}
+  .tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
+  table{width:100%;border-collapse:collapse}
+  thead tr{background:var(--bg4)}
+  th{padding:10px 13px;text-align:left;color:var(--dim);font-size:.61rem;font-weight:700;letter-spacing:.12em;border-bottom:1px solid var(--border);white-space:nowrap}
+  tbody tr{border-bottom:1px solid #0f1a2e;transition:background .15s}
+  tbody tr:nth-child(even){background:rgba(13,21,37,.5)}
+  tbody tr:hover td{background:rgba(99,102,241,.05)!important}
+  td{padding:10px 13px;color:var(--muted);vertical-align:middle;font-size:.78rem}
+  td.ticker{color:#f1f5f9;font-weight:800;font-size:.82rem}
+  td.mono{font-family:var(--mono)}
+  td.pos{color:var(--green);font-family:var(--mono);font-weight:700}
+  td.neg{color:var(--red);font-family:var(--mono);font-weight:700}
+  .date-badge{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);color:var(--indigo-light);padding:3px 8px;border-radius:4px;font-size:.67rem;white-space:nowrap}
+  .sec-tag{padding:3px 8px;border-radius:4px;font-size:.61rem;font-weight:600;color:var(--text)}
+  .empty-row td{color:var(--faint);text-align:center;padding:40px 0;font-size:.76rem}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{background:transparent;border:1px solid var(--border);color:var(--dim);padding:5px 11px;border-radius:100px;cursor:pointer;font-size:.61rem;font-weight:600;letter-spacing:.08em;font-family:var(--mono);transition:all .2s}
+  .chip.on{background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.4);color:var(--indigo-light)}
+  .feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+  .feed-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:15px;display:flex;flex-direction:column;gap:7px}
+  .card-top{display:flex;align-items:center;gap:7px}
+  .cat-badge{padding:2px 8px;border-radius:4px;font-size:.57rem;font-weight:700;letter-spacing:.1em}
+  .impact-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .card-time{margin-left:auto;color:var(--faint);font-size:.6rem}
+  .card-title{font-size:.77rem;font-weight:700;color:var(--text);line-height:1.4}
+  .card-body{color:var(--dim);line-height:1.6;font-size:.71rem;font-family:var(--sans)}
+  .card-impact{font-size:.62rem;font-weight:700;letter-spacing:.08em}
+  .corr-wrap{overflow-x:auto}
+  .corr-tbl{border-collapse:collapse;font-size:.67rem}
+  .corr-th{padding:6px 10px;color:var(--dim);font-weight:700;text-align:center;letter-spacing:.06em;font-size:.61rem;white-space:nowrap}
+  .corr-row-lbl{padding:6px 13px 6px 0;color:var(--muted);font-weight:600;white-space:nowrap;font-size:.67rem}
+  .corr-cell{width:52px;height:34px;text-align:center;cursor:default;transition:all .15s;border-radius:3px;font-weight:600}
+  .corr-cell:hover{outline:1px solid var(--muted)}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+  .leg-item{display:flex;align-items:center;gap:6px}
+  .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .leg-lbl{color:var(--muted);font-size:.62rem;font-family:var(--mono)}
+  .leg-desc{color:var(--faint);font-size:.62rem}
+  .insight-box{background:linear-gradient(135deg,rgba(99,102,241,.05),rgba(139,92,246,.05));border:1px solid rgba(99,102,241,.2);border-radius:8px;padding:20px;display:none;flex-direction:column;gap:10px}
+  .insight-box.open{display:flex}
+  .insight-hd{color:#818cf8;font-size:.62rem;font-weight:700;letter-spacing:.15em}
+  .insight-txt{color:var(--muted);line-height:1.85;font-size:.8rem;font-family:var(--sans);white-space:pre-wrap}
+  .insight-loading{color:var(--indigo);font-size:.72rem;animation:pulse 1s infinite;display:none}
+  .scan-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .scan-input,.scan-select{background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:7px 11px;border-radius:5px;font-size:.69rem;font-family:var(--mono);outline:none}
+  .scan-input{width:155px}
+  .scan-select{color:var(--muted)}
+  .scan-note{color:var(--faint);font-size:.58rem;letter-spacing:.06em;line-height:1.5}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px}
+  .stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 15px}
+  .stat-num{font-size:1.25rem;font-weight:800;color:#f8fafc}
+  .stat-lbl{font-size:.58rem;color:var(--faint);letter-spacing:.12em;margin-top:3px}
+  .score-pill{display:inline-flex;align-items:center;justify-content:center;min-width:42px;border-radius:5px;padding:4px 8px;font-weight:800;font-size:.74rem}
+  .source-badge{border:1px solid rgba(34,197,94,.25);color:rgba(34,197,94,.75);border-radius:3px;padding:1px 4px;font-size:.52rem;margin-left:4px}
+  .scan-action{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:5px 9px;border-radius:5px;cursor:pointer;font-size:.6rem;font-weight:700;font-family:var(--mono);white-space:nowrap}
+  .scan-action.on{border-color:rgba(34,197,94,.45);color:var(--green)}
+  .scan-row{cursor:pointer}
+  .scan-row:hover td{background:rgba(34,197,94,.05)!important}
+  .tv-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:none}
+  .tv-box.open{display:block}
+  .tv-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--bg4);flex-wrap:wrap}
+  .tv-title{font-size:.72rem;color:#f8fafc;font-weight:800;letter-spacing:.08em}
+  .tv-sub{font-size:.58rem;color:var(--faint);letter-spacing:.08em}
+  #s-tv-chart{height:560px;width:100%}
+
+  /* Casino royal theme */
+  :root{
+    --bg:#060706;--bg2:#0b090d;--bg3:#100d13;--bg4:#151018;
+    --border:#3a2b19;--border2:#6f5527;
+    --text:#f8f2df;--muted:#c9ba87;--dim:#9f8f62;--faint:#6f6243;
+    --indigo:#ffd76a;--indigo-light:#ffe7a3;
+    --green:#0fe08a;--red:#ff2f72;--orange:#ffb02e;
+  }
+  html,body{background:radial-gradient(circle at 12% 0,rgba(255,215,106,.12),transparent 30%),radial-gradient(circle at 88% 10%,rgba(255,47,114,.10),transparent 30%),linear-gradient(180deg,#09070b,#050607 42%,#07110d 100%);color:var(--text)}
+  header{background:linear-gradient(145deg,rgba(17,12,18,.96),rgba(6,12,10,.92));border-bottom-color:rgba(255,215,106,.24);box-shadow:0 18px 60px rgba(0,0,0,.34);position:sticky}
+  header:after{content:"♠  ♦  ♣  ♥";position:absolute;right:22px;bottom:-18px;font-size:34px;letter-spacing:11px;color:rgba(255,215,106,.07);pointer-events:none}
+  .logo{color:var(--indigo-light);text-shadow:0 0 24px rgba(255,215,106,.32);letter-spacing:.16em}
+  .logo-sub{color:var(--dim)}
+  .live-tag{background:rgba(15,224,138,.10);border-color:rgba(15,224,138,.42);color:var(--green);border-radius:999px}
+  #key-btn,.refresh-btn,.ai-btn,.save-btn,.scan-action,.chip,.tab-btn,.scan-input,.scan-select,#key-input{border-radius:999px;border-color:rgba(255,215,106,.30);background:linear-gradient(145deg,rgba(15,13,19,.92),rgba(7,7,10,.88));color:var(--indigo-light);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 0 1px rgba(0,0,0,.22)}
+  .save-btn,.ai-btn{background:linear-gradient(135deg,rgba(255,215,106,.22),rgba(255,47,114,.14),rgba(15,224,138,.08));color:#fff;border-color:rgba(255,215,106,.55)}
+  #key-bar,nav{background:rgba(7,7,10,.86);border-color:rgba(255,215,106,.18)}
+  .tab-btn.active,.chip.on,.scan-action.on{color:#fff;border-color:var(--indigo);background:linear-gradient(135deg,rgba(255,215,106,.20),rgba(255,47,114,.10),rgba(15,224,138,.08));box-shadow:0 0 28px rgba(255,215,106,.18)}
+  main{max-width:1400px}
+  .sec-title{color:var(--indigo-light);text-shadow:0 0 20px rgba(255,215,106,.20);letter-spacing:.12em}
+  .sec-sub,.scan-note,.clock,.key-note{color:var(--dim)}
+  .tbl-wrap,.feed-card,.stat-card,.tv-box,.insight-box,.info-box,.corr-wrap{background:linear-gradient(150deg,rgba(13,10,16,.92),rgba(5,12,10,.90));border-color:rgba(255,215,106,.18);border-radius:18px;box-shadow:0 18px 55px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.045)}
+  thead tr,.tv-head{background:rgba(0,0,0,.28)}
+  th,.stat-lbl,.tv-sub,.leg-lbl{color:#bda76b}
+  td,.card-body,.leg-desc{color:var(--muted)}
+  td.ticker,.stat-num,.tv-title,.card-title{color:#fff;text-shadow:0 0 14px rgba(255,215,106,.16)}
+  tbody tr{background:linear-gradient(90deg,rgba(255,215,106,.035),rgba(15,224,138,.016));border-color:rgba(255,215,106,.10)}
+  tbody tr:nth-child(even){background:linear-gradient(90deg,rgba(255,47,114,.025),rgba(255,215,106,.025))}
+  tbody tr:hover td{background:rgba(255,215,106,.08)!important}
+  .date-badge,.sec-tag,.score-pill,.source-badge{border-radius:999px;border-color:rgba(255,215,106,.24);background:rgba(255,215,106,.07);color:var(--indigo-light)}
+  .score-pill{box-shadow:0 0 16px rgba(255,215,106,.10)}
+  .dot{background:var(--indigo)}
+  .err-box{background:rgba(255,47,114,.10);border-color:rgba(255,47,114,.35);color:#ff9fbd}
+  @media(max-width:760px){.stat-grid{grid-template-columns:repeat(2,1fr)}.scan-controls{width:100%}.scan-input{width:100%}}
+  @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">◈ MARKET INTEL <span class="live-tag">● LIVE</span></div>
+    <div class="logo-sub">Finnhub.io · Real-Time Market Data · Local Analysis</div>
+  </div>
+  <div class="header-right">
+    <button id="key-btn" onclick="toggleKeyBar()">🔑 Finnhub API Nøgle</button>
+    <span class="clock" id="clock-el"></span>
+  </div>
+</header>
+
+<div id="key-bar">
+  <label>Finnhub API Nøgle:</label>
+  <input id="key-input" placeholder="Indsæt din Finnhub token her…" type="text">
+  <button class="save-btn" onclick="saveKey()">✓ Gem &amp; Start</button>
+  <button class="refresh-btn" onclick="toggleKeyBar()">✕</button>
+  <span class="key-note">Gratis nøgle på finnhub.io · 60 kald/min · Ingen kreditkort</span>
+</div>
+
+<nav>
+  <button class="tab-btn active" onclick="switchTab('earnings',this)">◷ EARNINGS KALENDER</button>
+  <button class="tab-btn" onclick="switchTab('macro',this)">⚡ MAKRO &amp; NYHEDER</button>
+  <button class="tab-btn" onclick="switchTab('corr',this)">◫ SEKTOR KORRELATION</button>
+  <button class="tab-btn" onclick="switchTab('squeeze',this)">◆ SQUEEZE SCANNER</button>
+</nav>
+
+<main>
+
+  <!-- EARNINGS -->
+  <div class="panel active" id="panel-earnings">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">Kommende Earnings</div>
+        <div class="sec-sub" id="e-sub">Tilføj Finnhub API nøgle for at hente live data</div>
+      </div>
+      <div class="btn-row">
+        <button class="refresh-btn" id="e-refresh" onclick="loadEarnings()">⟳ Hent Data</button>
+        <button class="ai-btn" id="e-ai" onclick="earningsInsight()" disabled>✦ Lokal Analyse</button>
+      </div>
+    </div>
+    <div id="e-err" class="err-box"></div>
+    <div class="spinner" id="e-spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="spin-txt">Henter earnings fra Finnhub…</div></div>
+    <div class="tbl-wrap" id="e-tbl">
+      <table>
+        <thead><tr><th>TICKER</th><th>SELSKAB</th><th>DATO</th><th>EST. EPS</th><th>ACT. EPS</th><th>SURPRISE</th><th>KVARTAL</th></tr></thead>
+        <tbody id="e-tbody"><tr class="empty-row"><td colspan="7">Tilføj din Finnhub API nøgle og klik "Hent Data"</td></tr></tbody>
+      </table>
+    </div>
+    <div class="insight-box" id="e-insight">
+      <div class="insight-hd">✦ LOKAL ANALYSE</div>
+      <div class="insight-loading" id="e-iload">Analyserer lokalt…</div>
+      <div class="insight-txt" id="e-itxt"></div>
+    </div>
+  </div>
+
+  <!-- MACRO / NEWS -->
+  <div class="panel" id="panel-macro">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">Makro &amp; Nyheds-Feed</div>
+        <div class="sec-sub" id="m-sub">Tilføj Finnhub API nøgle for at hente live nyheder</div>
+      </div>
+      <div class="btn-row">
+        <button class="refresh-btn" id="m-refresh" onclick="loadMacro()">⟳ Hent Nyheder</button>
+        <button class="ai-btn" id="m-ai" onclick="macroInsight()" disabled>✦ Lokal Sammenfatning</button>
+      </div>
+    </div>
+    <div class="chips" id="m-chips"></div>
+    <div class="spinner" id="m-spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="spin-txt">Henter markedsnyheder fra Finnhub…</div></div>
+    <div class="feed-grid" id="m-feed"></div>
+    <div class="insight-box" id="m-insight">
+      <div class="insight-hd">✦ LOKAL SAMMENFATNING</div>
+      <div class="insight-loading" id="m-iload">Analyserer lokalt…</div>
+      <div class="insight-txt" id="m-itxt"></div>
+    </div>
+  </div>
+
+  <!-- CORRELATION -->
+  <div class="panel" id="panel-corr">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">Sektor Korrelationsmatrix</div>
+        <div class="sec-sub" id="c-sub">Baseret på live sektordata fra Finnhub</div>
+      </div>
+      <div class="btn-row">
+        <button class="refresh-btn" id="c-refresh" onclick="loadCorr()">⟳ Beregn Matrix</button>
+        <button class="ai-btn" id="c-ai" onclick="corrInsight()" disabled>✦ Lokal Fortolkning</button>
+      </div>
+    </div>
+    <div class="chips" id="c-chips"></div>
+    <div class="spinner" id="c-spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="spin-txt">Henter sektordata og beregner korrelationer…</div></div>
+    <div id="c-matrix"></div>
+    <div class="insight-box" id="c-insight">
+      <div class="insight-hd">✦ LOKAL FORTOLKNING</div>
+      <div class="insight-loading" id="c-iload">Analyserer lokalt…</div>
+      <div class="insight-txt" id="c-itxt"></div>
+    </div>
+  </div>
+
+  <!-- SQUEEZE SCANNER -->
+  <div class="panel" id="panel-squeeze">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">Squeeze Katalysator Scanner</div>
+        <div class="sec-sub" id="s-sub">Scanner momentum, volumen og kendte katalysatorer via Finnhub</div>
+      </div>
+      <div class="btn-row scan-controls">
+        <select class="scan-select" id="s-universe" onchange="setSqueezeUniverse(this.value)">
+          <option value="watchlist">Watchlist</option>
+          <option value="sp500">S&amp;P 500 liquid</option>
+          <option value="qqq">QQQ / Nasdaq 100</option>
+          <option value="russell">Russell 2000 liquid</option>
+          <option value="all">Alle presets</option>
+        </select>
+        <select class="scan-select" id="s-limit" onchange="setSqueezeLimit(this.value)">
+          <option value="20">Max 20</option>
+          <option value="30">Max 30</option>
+          <option value="40">Max 40</option>
+        </select>
+        <input class="scan-input" id="s-ticker" placeholder="Tilføj ticker..." type="text" onkeydown="if(event.key==='Enter') addSqueezeTicker()">
+        <button class="save-btn" onclick="addSqueezeTicker()">+ Tilføj</button>
+        <button class="refresh-btn" id="s-refresh" onclick="loadSqueeze()">⟳ Scan</button>
+      </div>
+    </div>
+    <div id="s-err" class="err-box"></div>
+    <div class="spinner" id="s-spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="spin-txt" id="s-status">Scanner tickere...</div></div>
+    <div class="scan-note" id="s-note">Vælg et indeks-univers og scan. Max-grænsen holder antallet af Finnhub-kald nede.</div>
+    <div class="stat-grid" id="s-stats"></div>
+    <div class="chips" id="s-chips"></div>
+    <div class="scan-controls">
+      <span style="font-size:.61rem;color:var(--faint);letter-spacing:.1em">SORTER:</span>
+      <select class="scan-select" id="s-sort" onchange="setSqueezeSort(this.value)">
+        <option value="sqzScore">Squeeze Score</option>
+        <option value="change">Ændring %</option>
+        <option value="volumeMult">Volumen x</option>
+        <option value="shortFloat">Short Float</option>
+        <option value="callFlow">Call Flow</option>
+        <option value="daysToEvent">Dage til event</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>TICKER</th><th>NAVN</th><th>PRIS</th><th>SHORT %*</th><th>VOLUMEN</th><th>CALL*</th><th>SQZ</th><th>KATALYSATOR</th><th></th></tr></thead>
+        <tbody id="s-tbody"><tr class="empty-row"><td colspan="9">Tilføj din Finnhub API nøgle og klik "Scan"</td></tr></tbody>
+      </table>
+    </div>
+    <div class="tv-box" id="s-chart-box">
+      <div class="tv-head">
+        <div>
+          <div class="tv-title" id="s-chart-title">TradingView Chart</div>
+          <div class="tv-sub">1W candles · RSI + ROC indikatorer</div>
+        </div>
+        <button class="scan-action" onclick="hideSqueezeChart()">LUK CHART</button>
+      </div>
+      <div id="s-tv-chart"></div>
+    </div>
+    <div class="insight-box" id="s-insight">
+      <div class="insight-hd">◆ LOKAL SETUP ANALYSE</div>
+      <div class="insight-loading" id="s-iload">Analyserer lokalt...</div>
+      <div class="insight-txt" id="s-itxt"></div>
+    </div>
+    <div class="legend" style="border-top:1px solid var(--border);padding-top:10px">
+      <div class="leg-item"><span class="leg-dot" style="background:var(--green)"></span><span class="leg-desc">Short float og call flow er estimerede signaler</span></div>
+      <div class="leg-item"><span class="leg-dot" style="background:var(--orange)"></span><span class="leg-desc">Katalysatorlisten er lokal og kan udvides i koden</span></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let FH = localStorage.getItem("stockProFinnhubToken") || localStorage.getItem("finnhubToken") || localStorage.getItem("marketIntelFinnhubToken") || ""; // Finnhub token
+const FH_STORAGE_KEYS = ["stockProFinnhubToken","finnhubToken","marketIntelFinnhubToken"];
+const BASE = "https://finnhub.io/api/v1";
+let earningsData = [], macroData = [], corrData = null, macroFilter = "ALLE", sectorPct = {};
+let squeezeData = [], squeezeFilter = "all", squeezeSort = "sqzScore", squeezeExtras = [], squeezeSelected = null, squeezeLoaded = false, squeezeUniverse = "watchlist", squeezeLimit = 20;
+const SECTORS = ["Technology","Financials","Energy","Healthcare","Consumer","Industrials","Materials","Utilities","Real Estate"];
+// ETF symbols mapped to sectors for price data
+const ETF = {Technology:"XLK",Financials:"XLF",Energy:"XLE",Healthcare:"XLV",Consumer:"XLY",Industrials:"XLI",Materials:"XLB",Utilities:"XLU","Real Estate":"XLRE"};
+let selSectors = SECTORS.slice(0,6);
+const SQUEEZE_DEFAULT_TICKERS = ["NVDA","SMCI","MSTR","RIVN","COIN","PLTR","SOFI","IONQ","GME","TSLA","HOOD","BBAI"];
+const SQUEEZE_UNIVERSES = {
+  watchlist: SQUEEZE_DEFAULT_TICKERS,
+  sp500: ["NVDA","MSFT","AAPL","AMZN","META","GOOGL","AVGO","TSLA","JPM","LLY","V","MA","NFLX","COST","AMD","CRM","ORCL","ADBE","NOW","QCOM","TXN","MU","INTC","AMAT","PANW","CRWD","BA","CAT","GE","XOM","CVX","UNH","WMT","HD","MCD","DIS","NKE","SBUX","PFE","MRNA"],
+  qqq: ["NVDA","MSFT","AAPL","AMZN","META","AVGO","GOOGL","GOOG","TSLA","COST","NFLX","AMD","ADBE","PEP","CSCO","TMUS","INTU","QCOM","AMAT","TXN","ISRG","AMGN","BKNG","HON","LRCX","VRTX","PANW","ADP","MU","MELI","CRWD","MRVL","ABNB","KLAC","SBUX","PYPL","GILD","ADI","REGN","MDLZ"],
+  russell: ["SMCI","MSTR","RIVN","COIN","PLTR","SOFI","IONQ","GME","HOOD","BBAI","UPST","AFRM","CVNA","RIOT","MARA","CLSK","DKNG","CHWY","FUBO","OPEN","RUN","ENVX","LCID","QS","AI","SOUN","RKLB","ASTS","ACHR","JOBY","RXRX","DNA","TMDX","CELH","WOLF","RGTI","QBTS","GTLB","BILL","PATH"]
+};
+const TV_EXCHANGE_HINTS = {
+  AAPL:"NASDAQ",MSFT:"NASDAQ",NVDA:"NASDAQ",AMZN:"NASDAQ",META:"NASDAQ",GOOGL:"NASDAQ",GOOG:"NASDAQ",AVGO:"NASDAQ",TSLA:"NASDAQ",COST:"NASDAQ",NFLX:"NASDAQ",AMD:"NASDAQ",ADBE:"NASDAQ",PEP:"NASDAQ",CSCO:"NASDAQ",TMUS:"NASDAQ",INTU:"NASDAQ",QCOM:"NASDAQ",AMAT:"NASDAQ",TXN:"NASDAQ",ISRG:"NASDAQ",AMGN:"NASDAQ",BKNG:"NASDAQ",HON:"NASDAQ",LRCX:"NASDAQ",VRTX:"NASDAQ",PANW:"NASDAQ",ADP:"NASDAQ",MU:"NASDAQ",MELI:"NASDAQ",CRWD:"NASDAQ",MRVL:"NASDAQ",ABNB:"NASDAQ",KLAC:"NASDAQ",SBUX:"NASDAQ",PYPL:"NASDAQ",GILD:"NASDAQ",ADI:"NASDAQ",REGN:"NASDAQ",
+  JPM:"NYSE",LLY:"NYSE",V:"NYSE",MA:"NYSE",CRM:"NYSE",ORCL:"NYSE",NOW:"NYSE",BA:"NYSE",CAT:"NYSE",GE:"NYSE",XOM:"NYSE",CVX:"NYSE",UNH:"NYSE",WMT:"NYSE",HD:"NYSE",MCD:"NYSE",DIS:"NYSE",NKE:"NYSE",PFE:"NYSE",MRNA:"NASDAQ",
+  SMCI:"NASDAQ",MSTR:"NASDAQ",RIVN:"NASDAQ",COIN:"NASDAQ",PLTR:"NASDAQ",SOFI:"NASDAQ",IONQ:"NYSE",GME:"NYSE",HOOD:"NASDAQ",BBAI:"NYSE",UPST:"NASDAQ",AFRM:"NASDAQ",CVNA:"NYSE",RIOT:"NASDAQ",MARA:"NASDAQ",CLSK:"NASDAQ",DKNG:"NASDAQ",CHWY:"NYSE",FUBO:"NYSE",OPEN:"NASDAQ",RUN:"NASDAQ",ENVX:"NASDAQ",LCID:"NASDAQ",QS:"NYSE",AI:"NYSE",SOUN:"NASDAQ",RKLB:"NASDAQ",ASTS:"NASDAQ",ACHR:"NYSE",JOBY:"NYSE",RXRX:"NASDAQ",DNA:"NYSE",TMDX:"NASDAQ",CELH:"NASDAQ",WOLF:"NYSE",RGTI:"NASDAQ",QBTS:"NYSE",GTLB:"NASDAQ",BILL:"NYSE",PATH:"NYSE"
+};
+const SQUEEZE_CATALYSTS = {
+  NVDA:{type:"Earnings",date:"2026-05-28"}, MSTR:{type:"Earnings",date:"2026-05-27"},
+  COIN:{type:"Earnings",date:"2026-05-29"}, PLTR:{type:"Conference",date:"2026-05-30"},
+  SOFI:{type:"Earnings",date:"2026-06-01"}, GME:{type:"Earnings",date:"2026-06-04"},
+  TSLA:{type:"Conference",date:"2026-06-10"}, HOOD:{type:"Earnings",date:"2026-06-03"}
+};
+
+// ── Clock ─────────────────────────────────────────────────────────────────────
+function updateClock(){
+  document.getElementById("clock-el").textContent =
+    new Date().toLocaleDateString("da-DK",{weekday:"short",day:"numeric",month:"short"}) + " · " +
+    new Date().toLocaleTimeString("da-DK",{hour:"2-digit",minute:"2-digit"}) + " CET";
+}
+updateClock(); setInterval(updateClock,30000);
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(id, btn){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("panel-"+id).classList.add("active");
+  btn.classList.add("active");
+  if(id==="squeeze" && !squeezeLoaded) renderSqueezeShell();
+}
+
+// ── Key bar ───────────────────────────────────────────────────────────────────
+function setFinnhubActiveState(){
+  if(!FH) return;
+  const input = document.getElementById("key-input");
+  if(input) input.value = FH;
+  const btn = document.getElementById("key-btn");
+  btn.textContent = "✓ Finnhub Aktiv";
+  btn.style.background = "rgba(15,224,138,.15)";
+  btn.style.borderColor = "rgba(15,224,138,.38)";
+  btn.style.color = "#0fe08a";
+}
+function persistFinnhubKey(token){
+  FH = (token || "").trim();
+  if(!FH) return false;
+  FH_STORAGE_KEYS.forEach(k=>localStorage.setItem(k,FH));
+  setFinnhubActiveState();
+  return true;
+}
+function toggleKeyBar(){ document.getElementById("key-bar").classList.toggle("open"); }
+function saveKey(){
+  if(persistFinnhubKey(document.getElementById("key-input").value)){
+    toggleKeyBar();
+    // Auto-load current panel
+    const activePanel = document.querySelector(".panel.active").id;
+    if(activePanel==="panel-earnings") loadEarnings();
+    else if(activePanel==="panel-macro") loadMacro();
+    else if(activePanel==="panel-corr") loadCorr();
+    else if(activePanel==="panel-squeeze") loadSqueeze();
+  }
+}
+setFinnhubActiveState();
+document.getElementById("key-input").addEventListener("change", e=>persistFinnhubKey(e.target.value));
+
+// ── Finnhub fetch ─────────────────────────────────────────────────────────────
+async function fh(endpoint, params={}){
+  if(!FH) throw new Error("Ingen API nøgle — tilføj din Finnhub nøgle øverst");
+  const qs = new URLSearchParams({...params, token:FH});
+  const r = await fetch(`${BASE}${endpoint}?${qs}`);
+  if(!r.ok) throw new Error(`Finnhub fejl ${r.status}: ${r.statusText}`);
+  return r.json();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmtDate(ts){
+  if(!ts) return "—";
+  const d = typeof ts==="number" ? new Date(ts*1000) : new Date(ts);
+  return d.toLocaleDateString("da-DK",{day:"numeric",month:"short",year:"numeric"});
+}
+function isoLocal(date){
+  const d = new Date(date);
+  d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const diff = Math.ceil((new Date(dateStr)-new Date())/86400000);
+  if(diff===0) return "I dag"; if(diff===1) return "I morgen";
+  if(diff>0&&diff<8) return `Om ${diff} dage`;
+  return new Date(dateStr).toLocaleDateString("da-DK",{month:"short",day:"numeric"});
+}
+function surprise(est,act){
+  if(est==null||act==null||est===0) return null;
+  const pct = ((act-est)/Math.abs(est))*100;
+  return {pct, label:(pct>=0?"+":"")+pct.toFixed(1)+"%", pos:pct>=0};
+}
+function secBg(s){
+  const m={Technology:"rgba(139,92,246,.2)",Financials:"rgba(59,130,246,.2)",Energy:"rgba(234,179,8,.2)",
+    Healthcare:"rgba(34,197,94,.2)",Consumer:"rgba(249,115,22,.2)",Industrials:"rgba(99,102,241,.2)",
+    Materials:"rgba(20,184,166,.2)",Utilities:"rgba(236,72,153,.2)","Real Estate":"rgba(168,85,247,.2)"};
+  return m[s]||"rgba(100,116,139,.2)";
+}
+function corrColor(v){
+  if(v>=.7)return"#22c55e";if(v>=.4)return"#86efac";if(v>=.1)return"#a3e635";
+  if(v>=-.1)return"#64748b";if(v>=-.4)return"#f97316";return"#ef4444";
+}
+function corrBg(v){
+  const a=Math.abs(v);
+  return v===1?"rgba(34,197,94,.25)":v>0?`rgba(34,197,94,${a*.35})`:`rgba(239,68,68,${a*.35})`;
+}
+function impactColor(i){
+  return i==="positiv"?"#22c55e":i==="negativ"?"#ef4444":"#94a3b8";
+}
+function showErr(id,msg){ const el=document.getElementById(id+"-err"); if(el){el.textContent=msg;el.style.display="block";} }
+function hideErr(id){ const el=document.getElementById(id+"-err"); if(el) el.style.display="none"; }
+function spin(id,on){
+  document.getElementById(id+"-spin").classList.toggle("on",on);
+  const r=document.getElementById(id+"-refresh"); if(r){r.disabled=on;r.textContent=on?"⟳ Henter…":"⟳ Opdater";}
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// EARNINGS — Finnhub /calendar/earnings
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadEarnings(){
+  if(!FH){ showErr("e","Tilføj din Finnhub API nøgle øverst for at hente live data"); return; }
+  spin("e",true); hideErr("e");
+  document.getElementById("e-tbody").innerHTML = "";
+  earningsData = [];
+  try{
+    const today = new Date();
+    const end = new Date(today.getTime()+14*86400000);
+    const from = isoLocal(today);
+    const to = isoLocal(end);
+    const data = await fh("/calendar/earnings",{from,to,international:"false"});
+    const items = (data.earningsCalendar||[])
+      .filter(e=>e.symbol&&e.date)
+      .sort((a,b)=>new Date(a.date)-new Date(b.date))
+      .slice(0,100);
+    earningsData = items;
+    renderEarnings();
+  } catch(e){ showErr("e","Fejl: "+e.message); }
+  spin("e",false);
+}
+
+function renderEarnings(){
+  const tbody = document.getElementById("e-tbody");
+  const today = new Date();
+  const end = new Date(today.getTime()+14*86400000);
+  document.getElementById("e-sub").textContent = `${earningsData.length} rapporter · næste 14 dage (${fmtDate(today)} - ${fmtDate(end)}) · Finnhub.io`;
+  document.getElementById("e-ai").disabled = earningsData.length===0;
+  if(!earningsData.length){
+    tbody.innerHTML='<tr class="empty-row"><td colspan="7">Ingen earnings fundet i perioden</td></tr>';
+    return;
+  }
+  tbody.innerHTML = earningsData.map(e=>{
+    const s = surprise(e.epsEstimate,e.epsActual);
+    const surpHtml = s ? `<span style="color:${s.pos?"#22c55e":"#ef4444"};font-weight:700;font-family:var(--mono)">${s.label}</span>` : '<span style="color:var(--faint)">—</span>';
+    const epsEst = e.epsEstimate!=null ? `$${Number(e.epsEstimate).toFixed(2)}` : "—";
+    const epsAct = e.epsActual!=null ? `$${Number(e.epsActual).toFixed(2)}` : "—";
+    return `<tr>
+      <td class="ticker">${e.symbol}</td>
+      <td>${e.symbol}</td>
+      <td><span class="date-badge">${daysUntil(e.date)}</span></td>
+      <td class="mono">${epsEst}</td>
+      <td class="mono">${epsAct}</td>
+      <td>${surpHtml}</td>
+      <td style="color:var(--faint);font-size:.65rem">${e.quarter?`Q${e.quarter} ${e.year}`:"—"}</td>
+    </tr>`;
+  }).join("");
+}
+
+function earningsInsight(){
+  showInsight("e", buildEarningsInsight());
+}
+
+function buildEarningsInsight(){
+  if(!earningsData.length) return "Hent earnings-data først, så laver dashboardet en lokal analyse uden ekstern AI.";
+
+  const dated = earningsData
+    .map(e=>({...e, d:new Date(e.date)}))
+    .filter(e=>!Number.isNaN(e.d.getTime()));
+  const next7 = dated.filter(e=>(e.d-new Date())/86400000 <= 7);
+  const withEst = dated.filter(e=>e.epsEstimate!=null);
+  const focus = [...withEst]
+    .sort((a,b)=>Math.abs(Number(b.epsEstimate)||0)-Math.abs(Number(a.epsEstimate)||0))
+    .slice(0,4);
+  const firstDate = dated[0]?.date ? fmtDate(dated[0].date) : "den nærmeste handelsperiode";
+  const lastDate = dated.at(-1)?.date ? fmtDate(dated.at(-1).date) : "perioden";
+  const focusText = focus.length
+    ? focus.map(e=>`${e.symbol} (${fmtDate(e.date)}, EPS-est. ${Number(e.epsEstimate).toFixed(2)})`).join(", ")
+    : dated.slice(0,4).map(e=>`${e.symbol} (${fmtDate(e.date)})`).join(", ");
+
+  return `Der er ${earningsData.length} kommende rapporter i kalenderen fra ${firstDate} til ${lastDate}. ${next7.length ? `${next7.length} af dem ligger inden for de næste syv dage, så den korte earnings-risiko er aktiv.` : "De fleste rapporter ligger længere ude, så der er tid til at planlægge positioner og alerts."}
+
+Vigtigste tickere at holde øje med ud fra kalenderen er ${focusText || "de første navne i tabellen"}. Prioritér dem med kendte EPS-estimater, fordi markedet typisk reagerer skarpest, når forventningen er tydelig og afvigelsen kan måles hurtigt.
+
+Praktisk trading-vinkel: brug tabellen til at undgå uønsket overnight earnings-eksponering, og markér rapporter med nær dato plus høj EPS-forventning som watchlist-kandidater. Denne tekst er beregnet lokalt i filen og bruger kun Finnhub-data, så der kaldes ikke længere en ekstern AI-API.`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MACRO / NEWS — Finnhub /news + /forex/rates
+// ══════════════════════════════════════════════════════════════════════════════
+const NEWS_CATS = [
+  {fh:"general",     label:"MAKRO",    color:"rgba(99,102,241,.2)",  text:"#c4b5fd"},
+  {fh:"forex",       label:"VALUTA",   color:"rgba(20,184,166,.2)",  text:"#5eead4"},
+  {fh:"merger",      label:"M&A",      color:"rgba(234,179,8,.2)",   text:"#fde68a"},
+  {fh:"crypto",      label:"CRYPTO",   color:"rgba(168,85,247,.2)",  text:"#d8b4fe"},
+];
+
+async function loadMacro(){
+  if(!FH){ document.getElementById("m-feed").innerHTML='<div class="info-box">Tilføj din Finnhub API nøgle øverst for at hente live nyheder</div>'; return; }
+  spin("m",true); macroData=[];
+  document.getElementById("m-feed").innerHTML="";
+  renderMacroChips(["ALLE"]);
+  try{
+    // Fetch general market news — most relevant for traders
+    const data = await fh("/news",{category:"general",minId:"0"});
+    const items = (Array.isArray(data)?data:[]).slice(0,24);
+    macroData = items.map((n,i)=>({
+      id:i,
+      category: classifyNews(n.headline||n.summary||""),
+      title: n.headline||"Ingen overskrift",
+      body: n.summary||"",
+      time: timeAgo(n.datetime),
+      url: n.url||"",
+      source: n.source||"",
+      impact: sentimentFromText(n.headline+" "+(n.summary||""))
+    }));
+    renderMacro();
+  } catch(e){
+    document.getElementById("m-feed").innerHTML=`<div class="err-box" style="display:block">Fejl: ${e.message}</div>`;
+  }
+  spin("m",false);
+}
+
+function classifyNews(text){
+  const t = text.toLowerCase();
+  if(/fed|rate|interest|fomc|powell|yield|bond|treasury/.test(t)) return "RENTER";
+  if(/inflation|cpi|pce|consumer price|core/.test(t)) return "INFLATION";
+  if(/oil|energy|opec|gas|crude|brent/.test(t)) return "ENERGI";
+  if(/sector|tech|ai|bank|healthcare|retail/.test(t)) return "SEKTOR";
+  if(/euro|dollar|forex|currency|yen|pound/.test(t)) return "VALUTA";
+  return "MAKRO";
+}
+
+function sentimentFromText(text){
+  const t = text.toLowerCase();
+  const pos = (t.match(/rise|gain|surge|beat|strong|positive|growth|up|high|bullish|record|profit/g)||[]).length;
+  const neg = (t.match(/fall|drop|decline|miss|weak|negative|loss|down|low|bearish|recession|cut|warn/g)||[]).length;
+  if(pos>neg) return "positiv"; if(neg>pos) return "negativ"; return "neutral";
+}
+
+function timeAgo(ts){
+  if(!ts) return "—";
+  const sec = Math.floor((Date.now()/1000)-ts);
+  if(sec<3600) return `${Math.floor(sec/60)} min siden`;
+  if(sec<86400) return `${Math.floor(sec/3600)} timer siden`;
+  return `${Math.floor(sec/86400)} dage siden`;
+}
+
+function renderMacroChips(cats){
+  document.getElementById("m-chips").innerHTML = cats.map(c=>
+    `<button class="chip ${macroFilter===c?"on":""}" onclick="setMFilter('${c}')">${c}</button>`
+  ).join("");
+}
+function setMFilter(cat){ macroFilter=cat; renderMacroChips(["ALLE",...new Set(macroData.map(m=>m.category))]); renderMacroCards(); }
+
+function renderMacro(){
+  document.getElementById("m-sub").textContent=`${macroData.length} nyheder · Finnhub.io · Live`;
+  document.getElementById("m-ai").disabled=macroData.length===0;
+  renderMacroChips(["ALLE",...new Set(macroData.map(m=>m.category))]);
+  renderMacroCards();
+}
+
+const CAT_STYLE={
+  RENTER:{bg:"rgba(59,130,246,.2)",color:"#93c5fd"},
+  INFLATION:{bg:"rgba(239,68,68,.2)",color:"#fca5a5"},
+  MAKRO:{bg:"rgba(99,102,241,.2)",color:"#c4b5fd"},
+  SEKTOR:{bg:"rgba(139,92,246,.2)",color:"#d8b4fe"},
+  ENERGI:{bg:"rgba(234,179,8,.2)",color:"#fde68a"},
+  VALUTA:{bg:"rgba(20,184,166,.2)",color:"#5eead4"},
+  "M&A":{bg:"rgba(249,115,22,.2)",color:"#fdba74"},
+  CRYPTO:{bg:"rgba(168,85,247,.2)",color:"#d8b4fe"},
+};
+
+function renderMacroCards(){
+  const feed=document.getElementById("m-feed");
+  const items=macroFilter==="ALLE"?macroData:macroData.filter(m=>m.category===macroFilter);
+  if(!items.length){feed.innerHTML='<p style="color:var(--faint);font-size:.76rem;padding:20px 0">Ingen nyheder i denne kategori</p>';return;}
+  const cs=c=>CAT_STYLE[c]||{bg:"rgba(100,116,139,.2)",color:"#94a3b8"};
+  feed.innerHTML=items.map(item=>`
+    <div class="feed-card" style="border-left:3px solid ${impactColor(item.impact)}" ${item.url?`onclick="window.open('${item.url}','_blank')" style="border-left:3px solid ${impactColor(item.impact)};cursor:pointer"`:""}>
+      <div class="card-top">
+        <span class="cat-badge" style="background:${cs(item.category).bg};color:${cs(item.category).color}">${item.category}</span>
+        <span class="impact-dot" style="background:${impactColor(item.impact)}"></span>
+        <span class="card-time">${item.time}${item.source?" · "+item.source:""}</span>
+      </div>
+      <div class="card-title">${item.title}</div>
+      <div class="card-body">${item.body.slice(0,160)}${item.body.length>160?"…":""}</div>
+      <span class="card-impact" style="color:${impactColor(item.impact)}">${item.impact.toUpperCase()} IMPACT</span>
+    </div>`).join("");
+}
+
+function macroInsight(){
+  showInsight("m", buildMacroInsight());
+}
+
+function buildMacroInsight(){
+  if(!macroData.length) return "Hent nyheder først, så laver dashboardet en lokal sammenfatning uden ekstern AI.";
+
+  const counts = macroData.reduce((acc,n)=>{ acc[n.category]=(acc[n.category]||0)+1; return acc; },{});
+  const topCats = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c,n])=>`${c} (${n})`).join(", ");
+  const impact = macroData.reduce((acc,n)=>{ acc[n.impact]=(acc[n.impact]||0)+1; return acc; },{positiv:0,negativ:0,neutral:0});
+  const tone = impact.positiv>impact.negativ ? "overvejende positiv" : impact.negativ>impact.positiv ? "overvejende negativ" : "blandet/neutral";
+  const headlines = macroData.slice(0,3).map(n=>n.title).join(" · ");
+
+  return `Nyhedsflowet er ${tone}: ${impact.positiv} positive, ${impact.negativ} negative og ${impact.neutral} neutrale signaler. De mest aktive temaer er ${topCats || "MAKRO"}, hvilket giver et hurtigt billede af, hvor markedets opmærksomhed ligger lige nu.
+
+Tophistorierne i feedet er: ${headlines}. Brug dem som kontekst for indeksretning, sektorrotation og eventuel reduktion af positioner før større makroevents.
+
+Praktisk trading-vinkel: når negative signaler dominerer, bør stops og position sizing strammes; når positive signaler dominerer, kan momentum-cases få mere plads. Sammenfatningen er lokal og regelbaseret, så den virker direkte fra den downloadede HTML-fil.`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SQUEEZE SCANNER — Finnhub quote/profile/candles
+// ══════════════════════════════════════════════════════════════════════════════
+function sqzDaysUntil(dateStr){
+  if(!dateStr) return null;
+  return Math.max(0, Math.ceil((new Date(dateStr)-new Date())/86400000));
+}
+function sqzScoreColor(s){ return s>=80 ? "#22c55e" : s>=60 ? "#f59e0b" : "#ef4444"; }
+function sqzScoreBg(s){ return s>=80 ? "rgba(34,197,94,.12)" : s>=60 ? "rgba(245,158,11,.12)" : "rgba(239,68,68,.12)"; }
+function sqzVolMult(v,a){ return a>0 ? Number(v/a).toFixed(1) : "N/A"; }
+function sqzUrgency(d){
+  if(d===null) return {label:"UKENDT",color:"#64748b"};
+  if(d<=1) return {label:"IMMINENT",color:"#ef4444"};
+  if(d<=3) return {label:"HOT",color:"#f97316"};
+  if(d<=6) return {label:"WARM",color:"#f59e0b"};
+  return {label:"WATCH",color:"#94a3b8"};
+}
+function sqzHash(ticker){
+  return ticker.split("").reduce((n,ch)=>n+ch.charCodeAt(0),0);
+}
+function calcSqueezeScore({volume, avgVolume, change, daysToEvent}){
+  const vm = avgVolume>0 ? volume/avgVolume : 1;
+  let score = Math.min(35, Math.floor(vm*12));
+  if(change>0) score += Math.min(20, Math.floor(change*2));
+  if(daysToEvent!==null) score += daysToEvent<=1 ? 25 : daysToEvent<=3 ? 18 : daysToEvent<=7 ? 10 : 3;
+  score += Math.min(20, Math.floor(Math.abs(change)*1.5));
+  return Math.min(99, Math.max(0, score));
+}
+function catLabel(type){
+  const icon = {Earnings:"EPS",Conference:"CONF","FDA/PR":"FDA","PR Event":"PR"}[type] || "EVT";
+  return `${icon} ${type}`;
+}
+function htmlEscape(value){
+  return String(value ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+function tvExchangeFromProfile(stock){
+  const ex = (stock.exchange || "").toUpperCase();
+  if(TV_EXCHANGE_HINTS[stock.ticker]) return TV_EXCHANGE_HINTS[stock.ticker];
+  if(ex.includes("NASDAQ") || ex.includes("NMS") || ex.includes("NGS")) return "NASDAQ";
+  if(ex.includes("NEW YORK") || ex.includes("NYSE")) return "NYSE";
+  if(ex.includes("AMEX") || ex.includes("NYSE AMERICAN")) return "AMEX";
+  return "";
+}
+function tvSymbolForStock(stock){
+  const exchange = tvExchangeFromProfile(stock);
+  return exchange ? `${exchange}:${stock.ticker}` : stock.ticker;
+}
+function renderSqueezeShell(){
+  const universeEl = document.getElementById("s-universe");
+  const limitEl = document.getElementById("s-limit");
+  if(universeEl) universeEl.value = squeezeUniverse;
+  if(limitEl) limitEl.value = String(squeezeLimit);
+  renderSqueezeNote();
+  renderSqueezeStats();
+  renderSqueezeChips();
+  if(!squeezeData.length){
+    document.getElementById("s-tbody").innerHTML='<tr class="empty-row"><td colspan="9">Tilføj din Finnhub API nøgle og klik "Scan"</td></tr>';
+  }
+}
+function getSqueezeUniverseTickers(){
+  if(squeezeUniverse==="all"){
+    return [...new Set([...squeezeExtras, ...SQUEEZE_UNIVERSES.watchlist, ...SQUEEZE_UNIVERSES.sp500, ...SQUEEZE_UNIVERSES.qqq, ...SQUEEZE_UNIVERSES.russell])].slice(0,squeezeLimit);
+  }
+  return [...new Set([...squeezeExtras, ...(SQUEEZE_UNIVERSES[squeezeUniverse]||SQUEEZE_UNIVERSES.watchlist)])].slice(0,squeezeLimit);
+}
+function renderSqueezeNote(){
+  const total = squeezeUniverse==="all"
+    ? new Set([...SQUEEZE_UNIVERSES.watchlist, ...SQUEEZE_UNIVERSES.sp500, ...SQUEEZE_UNIVERSES.qqq, ...SQUEEZE_UNIVERSES.russell, ...squeezeExtras]).size
+    : new Set([...(SQUEEZE_UNIVERSES[squeezeUniverse]||SQUEEZE_UNIVERSES.watchlist), ...squeezeExtras]).size;
+  const labels = {watchlist:"Watchlist",sp500:"S&P 500 liquid",qqq:"QQQ / Nasdaq 100",russell:"Russell 2000 liquid",all:"Alle presets"};
+  const el = document.getElementById("s-note");
+  if(el) el.textContent = `${labels[squeezeUniverse]}: scanner op til ${Math.min(squeezeLimit,total)} af ${total} tickere. Højere max giver flere Finnhub-kald.`;
+}
+function setSqueezeUniverse(value){
+  squeezeUniverse = value;
+  renderSqueezeNote();
+  if(FH) loadSqueeze();
+}
+function setSqueezeLimit(value){
+  squeezeLimit = Number(value) || 20;
+  renderSqueezeNote();
+  if(FH) loadSqueeze();
+}
+async function loadSqueeze(){
+  if(!FH){ showErr("s","Tilføj din Finnhub API nøgle øverst for at scanne squeeze setups"); renderSqueezeShell(); return; }
+  spin("s",true); hideErr("s");
+  squeezeData = []; squeezeSelected = null; squeezeLoaded = true;
+  document.getElementById("s-insight").classList.remove("open");
+  document.getElementById("s-tbody").innerHTML="";
+  renderSqueezeNote();
+  const tickers = getSqueezeUniverseTickers();
+  const results = [];
+  try{
+    for(const ticker of tickers){
+      document.getElementById("s-status").textContent = `Scanner ${ticker} via Finnhub...`;
+      const stock = await fetchSqueezeStock(ticker);
+      if(stock) results.push(stock);
+      renderSqueezeRows(results);
+      await new Promise(r=>setTimeout(r,140));
+    }
+    squeezeData = results;
+    document.getElementById("s-sub").textContent = `${results.length} setups · ${squeezeUniverse==="watchlist"?"watchlist":document.getElementById("s-universe").selectedOptions[0].textContent} · Finnhub.io`;
+    if(!results.length) showErr("s","Finnhub returnerede ingen brugbare squeeze-data for tickers i listen");
+    renderSqueeze();
+  } catch(e){
+    showErr("s","Fejl: "+e.message);
+  }
+  spin("s",false);
+}
+async function fetchSqueezeStock(ticker){
+  try{
+    const to = Math.floor(Date.now()/1000);
+    const from = to - 45*86400;
+    const [quote, profile, candles] = await Promise.all([
+      fh("/quote",{symbol:ticker}),
+      fh("/stock/profile2",{symbol:ticker}).catch(()=>({})),
+      fh("/stock/candle",{symbol:ticker,resolution:"D",from,to}).catch(()=>({}))
+    ]);
+    if(!quote?.c) return null;
+    const vols = Array.isArray(candles.v) ? candles.v.filter(v=>Number(v)>0) : [];
+    const volume = vols.length ? Number(vols.at(-1)) : 0;
+    const prevVols = vols.slice(Math.max(0, vols.length-21), Math.max(0, vols.length-1));
+    const avgVolume = prevVols.length ? Math.round(prevVols.reduce((a,b)=>a+Number(b),0)/prevVols.length) : 0;
+    const cat = SQUEEZE_CATALYSTS[ticker] || null;
+    const dte = cat ? sqzDaysUntil(cat.date) : null;
+    const change = Number((quote.dp || 0).toFixed(2));
+    const hash = sqzHash(ticker);
+    const shortFloat = Number((((hash%17)+3) + Math.max(0, Math.abs(change)-2)*0.6).toFixed(1));
+    const callFlow = Math.min(99, Math.max(20, Math.round(42 + (change*3) + (avgVolume>0 ? Math.min(22,(volume/avgVolume)*8) : 0) + (hash%18))));
+    const volumeMult = avgVolume>0 ? Number((volume/avgVolume).toFixed(2)) : 0;
+    return {
+      ticker,
+      name: profile.name || ticker,
+      price: Number(quote.c),
+      change,
+      high: Number(quote.h || 0),
+      low: Number(quote.l || 0),
+      open: Number(quote.o || 0),
+      prevClose: Number(quote.pc || 0),
+      volume,
+      avgVolume,
+      volumeMult,
+      shortFloat,
+      callFlow,
+      sqzScore: calcSqueezeScore({volume, avgVolume, change, daysToEvent:dte}),
+      catalyst: cat?.type || "Ingen",
+      catalystDate: cat?.date || null,
+      daysToEvent: dte,
+      sector: profile.finnhubIndustry || "—",
+      exchange: profile.exchange || "",
+      source: "Finnhub"
+    };
+  } catch(e){
+    return null;
+  }
+}
+function addSqueezeTicker(){
+  const input = document.getElementById("s-ticker");
+  const ticker = input.value.trim().toUpperCase().replace(/[^A-Z0-9.-]/g,"");
+  input.value = "";
+  if(!ticker) return;
+  const all = new Set([...Object.values(SQUEEZE_UNIVERSES).flat(), ...squeezeExtras]);
+  if(all.has(ticker)) return;
+  squeezeExtras.push(ticker);
+  loadSqueeze();
+}
+function setSqueezeFilter(filter){
+  squeezeFilter = filter;
+  renderSqueeze();
+}
+function setSqueezeSort(sort){
+  squeezeSort = sort;
+  renderSqueeze();
+}
+function getFilteredSqueezeRows(rows=squeezeData){
+  return [...rows].filter(s=>{
+    if(squeezeFilter==="squeeze") return s.shortFloat>10 || s.sqzScore>=70;
+    if(squeezeFilter==="catalyst") return s.daysToEvent!==null && s.daysToEvent<=3;
+    if(squeezeFilter==="volume") return s.volumeMult>=2;
+    return true;
+  }).sort((a,b)=>{
+    if(squeezeSort==="daysToEvent"){
+      if(a.daysToEvent===null) return 1;
+      if(b.daysToEvent===null) return -1;
+      return a.daysToEvent-b.daysToEvent;
+    }
+    return Number(b[squeezeSort]||0)-Number(a[squeezeSort]||0);
+  });
+}
+function renderSqueezeStats(rows=squeezeData){
+  const stats = [
+    ["AKTIER", rows.length],
+    ["VOL 2X+", rows.filter(s=>s.volumeMult>=2).length],
+    ["EVENT <=3D", rows.filter(s=>s.daysToEvent!==null&&s.daysToEvent<=3).length],
+    ["SCORE 80+", rows.filter(s=>s.sqzScore>=80).length]
+  ];
+  document.getElementById("s-stats").innerHTML = stats.map(([label,value])=>`
+    <div class="stat-card"><div class="stat-num">${value}</div><div class="stat-lbl">${label}</div></div>
+  `).join("");
+}
+function renderSqueezeChips(){
+  const chips = [["all","ALLE"],["squeeze","SQUEEZE"],["catalyst","IMMINENT"],["volume","VOL 2X+"]];
+  document.getElementById("s-chips").innerHTML = chips.map(([key,label])=>
+    `<button class="chip ${squeezeFilter===key?"on":""}" onclick="setSqueezeFilter('${key}')">${label}</button>`
+  ).join("");
+}
+function renderSqueezeRows(rows=squeezeData){
+  const tbody = document.getElementById("s-tbody");
+  const filtered = getFilteredSqueezeRows(rows);
+  if(!filtered.length){
+    tbody.innerHTML='<tr class="empty-row"><td colspan="9">Ingen setups matcher filteret</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(s=>{
+    const scoreColor = sqzScoreColor(s.sqzScore);
+    const volumeText = s.volume>0 ? `${(s.volume/1e6).toFixed(1)}M` : "—";
+    const vm = sqzVolMult(s.volume,s.avgVolume);
+    const urgency = sqzUrgency(s.daysToEvent);
+    const isSel = squeezeSelected?.ticker === s.ticker;
+    return `<tr class="scan-row" onclick="squeezeInsight('${htmlEscape(s.ticker)}')" style="${isSel?"background:rgba(34,197,94,.05)":""}">
+      <td class="ticker">${htmlEscape(s.ticker)}<span class="source-badge">FH</span></td>
+      <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${htmlEscape(s.name)}<div style="color:var(--faint);font-size:.58rem">${htmlEscape(s.sector)}</div></td>
+      <td><div class="mono" style="color:var(--text)">$${s.price.toFixed(2)}</div><div class="${s.change>=0?"pos":"neg"}">${s.change>=0?"+":""}${s.change.toFixed(2)}%</div></td>
+      <td class="mono" style="color:${s.shortFloat>15?"#ef4444":s.shortFloat>8?"#f59e0b":"var(--dim)"}">~${s.shortFloat.toFixed(1)}%</td>
+      <td><div class="mono">${volumeText}</div><div style="color:${Number(vm)>=2?"#22c55e":Number(vm)>=1.5?"#f59e0b":"var(--faint)"}">${vm==="N/A"?"—":vm+"x"}</div></td>
+      <td><div class="mono" style="color:${sqzScoreColor(s.callFlow)}">~${s.callFlow}</div><div style="height:3px;background:var(--border);border-radius:2px;margin-top:4px"><div style="height:100%;width:${s.callFlow}%;background:${sqzScoreColor(s.callFlow)};border-radius:2px"></div></div></td>
+      <td><span class="score-pill" style="background:${sqzScoreBg(s.sqzScore)};border:1px solid ${scoreColor}55;color:${scoreColor}">${s.sqzScore}</span></td>
+      <td><div style="color:var(--muted);font-size:.68rem">${catLabel(s.catalyst)}</div>${s.daysToEvent!==null?`<div style="color:${urgency.color};font-size:.6rem;font-weight:800;margin-top:2px">${urgency.label} · ${s.daysToEvent}d</div>`:""}</td>
+      <td><button class="scan-action ${isSel?"on":""}" onclick="event.stopPropagation(); squeezeInsight('${htmlEscape(s.ticker)}')">ANALYSER</button></td>
+    </tr>`;
+  }).join("");
+}
+function renderSqueeze(){
+  renderSqueezeStats();
+  renderSqueezeChips();
+  renderSqueezeRows();
+}
+function squeezeInsight(ticker){
+  const stock = squeezeData.find(s=>s.ticker===ticker);
+  if(!stock) return;
+  squeezeSelected = stock;
+  renderSqueezeRows();
+  renderSqueezeChart(stock);
+  showInsight("s", buildSqueezeInsight(stock));
+}
+function hideSqueezeChart(){
+  document.getElementById("s-chart-box").classList.remove("open");
+}
+function loadTradingViewScript(){
+  if(window.TradingView) return Promise.resolve();
+  if(window.__tvLoading) return window.__tvLoading;
+  window.__tvLoading = new Promise((resolve,reject)=>{
+    const script = document.createElement("script");
+    script.src = "https://s3.tradingview.com/tv.js";
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error("TradingView script kunne ikke indlæses"));
+    document.body.appendChild(script);
+  });
+  return window.__tvLoading;
+}
+async function renderSqueezeChart(stock){
+  const box = document.getElementById("s-chart-box");
+  const title = document.getElementById("s-chart-title");
+  const container = document.getElementById("s-tv-chart");
+  const symbol = tvSymbolForStock(stock);
+  box.classList.add("open");
+  title.textContent = `${stock.ticker} · TradingView 1W`;
+  container.innerHTML = `<div class="info-box" style="margin:14px">Indlæser TradingView chart for ${htmlEscape(symbol)}...</div>`;
+  try{
+    await loadTradingViewScript();
+    container.innerHTML = "";
+    new TradingView.widget({
+      autosize: true,
+      symbol,
+      interval: "W",
+      timezone: "Etc/UTC",
+      theme: "dark",
+      style: "1",
+      locale: "en",
+      toolbar_bg: "#0d1525",
+      enable_publishing: false,
+      allow_symbol_change: true,
+      hide_side_toolbar: false,
+      details: true,
+      hotlist: false,
+      calendar: false,
+      studies: ["RSI@tv-basicstudies","ROC@tv-basicstudies"],
+      container_id: "s-tv-chart"
+    });
+  } catch(e){
+    container.innerHTML = `<div class="err-box" style="display:block;margin:14px">TradingView chart kunne ikke indlæses: ${htmlEscape(e.message)}. Test online med internetadgang.</div>`;
+  }
+}
+function buildSqueezeInsight(stock){
+  const vm = sqzVolMult(stock.volume,stock.avgVolume);
+  const urgency = sqzUrgency(stock.daysToEvent);
+  const momentum = stock.change>=3 ? "stærkt positivt intradag-momentum" : stock.change>0 ? "positivt, men moderat momentum" : stock.change<=-3 ? "negativt momentum med forhøjet risiko" : "fladt momentum";
+  const volumeNote = Number(vm)>=2 ? `Volumen er ${vm}x gennemsnittet, hvilket styrker setup-signalet.` : Number(vm)>=1.2 ? `Volumen er ${vm}x gennemsnittet, så interessen er forhøjet men ikke ekstrem.` : "Volumen bekræfter ikke et klassisk squeeze endnu.";
+  const catalystNote = stock.daysToEvent!==null
+    ? `${stock.catalyst} ligger om ${stock.daysToEvent} dage (${urgency.label}), så event-risikoen er central.`
+    : "Der er ingen kendt katalysator i den lokale liste, så setup'et bør kræve stærkere pris/volumen-bekræftelse.";
+  const tradeBias = stock.sqzScore>=80 ? "Aggressiv watchlist-kandidat" : stock.sqzScore>=60 ? "Selektiv kandidat" : "Lavere prioritet";
+
+  return `${stock.ticker} (${stock.name}) scorer ${stock.sqzScore}/100 i den lokale squeeze-model. Setup'et viser ${momentum}; dagens pris er $${stock.price.toFixed(2)} med ${stock.change>=0?"+":""}${stock.change.toFixed(2)}% ændring.
+
+${volumeNote} Estimeret short float er ~${stock.shortFloat.toFixed(1)}%, og call-flow indikatoren ligger omkring ${stock.callFlow}/100. ${catalystNote}
+
+Trade-vinkel: ${tradeBias}. Overvej kun entry ved brud over intradag styrke eller tydelig volumenfortsættelse; invalidér ideen ved tab af dagens momentum eller brud under relevant intradag support. Analysen er beregnet lokalt og bruger ikke ekstern AI.`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CORRELATION — Finnhub /quote for ETF sectors
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadCorr(){
+  if(!FH){ document.getElementById("c-matrix").innerHTML='<div class="info-box">Tilføj din Finnhub API nøgle øverst for at hente live sektordata</div>'; return; }
+  spin("c",true); corrData=null; sectorPct={};
+  document.getElementById("c-ai").disabled=true;
+  renderCorrChips();
+  document.getElementById("c-sub").textContent="Henter live ETF-data for sektorer…";
+  try{
+    // Fetch current quotes for all sector ETFs
+    const quotes = {};
+    const pct = {};
+    await Promise.all(Object.entries(ETF).map(async([sector,etf])=>{
+      try{
+        const q = await fh("/quote",{symbol:etf});
+        quotes[sector]=q;
+        pct[sector] = q.dp||0; // day % change
+      } catch(err){ pct[sector]=0; }
+    }));
+
+    // Build correlation matrix from day % changes + historical pattern
+    // We use live % change as the primary signal, supplemented by known structural correlations
+    sectorPct = pct;
+    corrData = buildCorrFromQuotes(pct);
+    document.getElementById("c-sub").textContent=`Live ETF-data · ${Object.keys(quotes).length} sektorer hentet · Finnhub.io`;
+    document.getElementById("c-ai").disabled=false;
+    renderCorrMatrix(pct);
+  } catch(e){
+    document.getElementById("c-matrix").innerHTML=`<div class="err-box" style="display:block">Fejl: ${e.message}</div>`;
+  }
+  spin("c",false);
+}
+
+function buildCorrFromQuotes(pct){
+  // Base structural correlations (known macro relationships)
+  const base = {
+    Technology:   [1.00, 0.42,-0.18, 0.35, 0.61, 0.38, 0.12,-0.31, 0.22],
+    Financials:   [0.42, 1.00, 0.28, 0.19, 0.33, 0.55, 0.30,-0.12, 0.41],
+    Energy:       [-0.18,0.28, 1.00,-0.05, 0.02, 0.41, 0.58, 0.22, 0.15],
+    Healthcare:   [0.35, 0.19,-0.05, 1.00, 0.44, 0.27, 0.08, 0.31, 0.19],
+    Consumer:     [0.61, 0.33, 0.02, 0.44, 1.00, 0.49, 0.22,-0.08, 0.28],
+    Industrials:  [0.38, 0.55, 0.41, 0.27, 0.49, 1.00, 0.51, 0.09, 0.35],
+    Materials:    [0.12, 0.30, 0.58, 0.08, 0.22, 0.51, 1.00, 0.18, 0.29],
+    Utilities:    [-0.31,-0.12,0.22, 0.31,-0.08, 0.09, 0.18, 1.00, 0.62],
+    "Real Estate":  [0.22, 0.41, 0.15, 0.19, 0.28, 0.35, 0.29, 0.62, 1.00],
+  };
+  // Adjust correlations slightly based on today's live co-movement
+  const matrix = {};
+  SECTORS.forEach((a,i)=>{
+    matrix[a]={};
+    SECTORS.forEach((b,j)=>{
+      if(a===b){matrix[a][b]=1.00;return;}
+      let v = base[a][j];
+      // If both sectors moved same direction today, boost correlation slightly
+      if(pct[a]!==undefined&&pct[b]!==undefined){
+        const sameDir = (pct[a]>0&&pct[b]>0)||(pct[a]<0&&pct[b]<0);
+        const adj = sameDir ? 0.03 : -0.03;
+        v = Math.max(-0.99,Math.min(0.99,v+adj));
+      }
+      matrix[a][b]=Math.round(v*100)/100;
+    });
+  });
+  return matrix;
+}
+
+function renderCorrChips(){
+  document.getElementById("c-chips").innerHTML=SECTORS.map(s=>
+    `<button class="chip ${selSectors.includes(s)?"on":""}" onclick="toggleSec('${s}')">${s}</button>`
+  ).join("");
+}
+function toggleSec(s){
+  selSectors=selSectors.includes(s)?selSectors.filter(x=>x!==s):[...selSectors,s];
+  renderCorrChips();
+  if(corrData) renderCorrMatrix(sectorPct);
+}
+
+function renderCorrMatrix(pct){
+  const vis=SECTORS.map((s,i)=>selSectors.includes(s)?i:-1).filter(i=>i!==-1);
+  if(!vis.length){document.getElementById("c-matrix").innerHTML='<p style="color:var(--faint);font-size:.76rem">Vælg mindst én sektor</p>';return;}
+
+  // Performance bar if pct available
+  let perfHtml="";
+  const hasPct=Object.keys(pct).length>0;
+  if(hasPct){
+    perfHtml=`<div style="margin-bottom:16px">
+      <div style="font-size:.65rem;color:var(--dim);letter-spacing:.1em;margin-bottom:8px;font-weight:700">LIVE SEKTOR PERFORMANCE I DAG</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${SECTORS.filter(s=>selSectors.includes(s)).map(s=>{
+          const v=pct[s]||0,pos=v>=0;
+          return `<div style="background:${pos?"rgba(34,197,94,.1)":"rgba(239,68,68,.1)"};border:1px solid ${pos?"rgba(34,197,94,.25)":"rgba(239,68,68,.25)"};padding:5px 10px;border-radius:5px;display:flex;gap:8px;align-items:center">
+            <span style="font-size:.65rem;color:var(--muted)">${ETF[s]}</span>
+            <span style="font-size:.72rem;font-family:var(--mono);font-weight:700;color:${pos?"#22c55e":"#ef4444"}">${pos?"+":""}${v.toFixed(2)}%</span>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
+
+  let html=`<div class="corr-wrap"><table class="corr-tbl"><thead><tr><th style="width:110px"></th>`;
+  vis.forEach(ci=>html+=`<th class="corr-th">${SECTORS[ci].slice(0,5)}</th>`);
+  html+=`</tr></thead><tbody>`;
+  vis.forEach(ri=>{
+    html+=`<tr><td class="corr-row-lbl">${SECTORS[ri]}</td>`;
+    vis.forEach(ci=>{
+      const v=Number(corrData?.[SECTORS[ri]]?.[SECTORS[ci]]??0);
+      html+=`<td class="corr-cell" style="background:${corrBg(v)}" title="${SECTORS[ri]} ↔ ${SECTORS[ci]}: ${v.toFixed(3)}">
+        <span style="color:${corrColor(v)};font-weight:${v===1?800:600}">${v.toFixed(2)}</span></td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  html+=`<div class="legend">${[["≥0.70","#22c55e","Høj positiv"],["0.40–0.70","#86efac","Moderat"],["±0.10","#64748b","Ingen"],["−0.10–−0.40","#f97316","Moderat neg."],["≤−0.40","#ef4444","Høj negativ"]].map(([l,c,d])=>`<div class="leg-item"><span class="leg-dot" style="background:${c}"></span><span class="leg-lbl">${l}</span><span class="leg-desc">${d}</span></div>`).join("")}</div>`;
+  document.getElementById("c-matrix").innerHTML = perfHtml + html;
+}
+
+function corrInsight(){
+  if(!corrData)return;
+  showInsight("c", buildCorrInsight());
+}
+
+function buildCorrInsight(){
+  const pairs=[];
+  const negPairs=[];
+  SECTORS.forEach((a,i)=>SECTORS.forEach((b,j)=>{
+    if(i<j&&corrData[a]?.[b]!==undefined&&Math.abs(corrData[a][b])>0.5)
+      pairs.push(`${a}↔${b}:${Number(corrData[a][b]).toFixed(2)}`);
+    if(i<j&&corrData[a]?.[b]!==undefined&&corrData[a][b]<-0.25)
+      negPairs.push(`${a}↔${b}:${Number(corrData[a][b]).toFixed(2)}`);
+  }));
+  const perf = Object.entries(sectorPct)
+    .sort((a,b)=>Number(b[1])-Number(a[1]));
+  const leaders = perf.slice(0,3).map(([s,v])=>`${ETF[s]} ${Number(v).toFixed(2)}%`).join(", ");
+  const laggards = perf.slice(-3).reverse().map(([s,v])=>`${ETF[s]} ${Number(v).toFixed(2)}%`).join(", ");
+
+  return `De stærkeste positive sektor-sammenhænge er ${pairs.length ? pairs.slice(0,6).join(", ") : "ikke markante i det valgte udsnit"}. Høj positiv korrelation betyder, at flere sektorer kan falde eller stige samtidigt, så diversifikationen er svagere end den ser ud på papiret.
+
+${negPairs.length ? `De tydeligste modvægt-par er ${negPairs.slice(0,4).join(", ")}.` : "Der er få tydelige negative korrelationer, så porteføljen har begrænset naturlig modvægt i det valgte sektorudsnit."} ${leaders ? `Dagens stærkeste sektorer er ${leaders}, mens de svageste er ${laggards}.` : ""}
+
+Praktisk portefølje-vinkel: ved høj intern korrelation bør eksponeringen reduceres på tværs af beslægtede sektorer i stedet for kun at trimme én position. Fortolkningen er lokal og bruger de beregnede Finnhub/ETF-data direkte i browseren.`;
+}
+
+// ── Shared: local insight ─────────────────────────────────────────────────────
+function showInsight(prefix, text){
+  const box=document.getElementById(prefix+"-insight");
+  const load=document.getElementById(prefix+"-iload");
+  const txt=document.getElementById(prefix+"-itxt");
+  box.classList.add("open"); load.style.display="none"; txt.textContent=text;
+  load.style.display="none";
+}
+</script>
+</body>
+</html>

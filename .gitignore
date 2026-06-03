@@ -1,0 +1,10 @@
+__pycache__/
+.cache/
+.etf_cache/
+*.pyc
+*.pyo
+*.db-shm
+*.db-wal
+.keys.json
+api_keys.json
+scan-state.json

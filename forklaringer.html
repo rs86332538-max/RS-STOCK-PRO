@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RS STOCK PRO v1.0 · Forklaringer</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070607;--panel:#111016;--panel2:#0b0a0f;--line:#3a2f15;--line2:#171116;
+  --text:#fff8e7;--dim:#cbbf9f;--muted:#9f8f62;--gold:#ffd76a;--gold2:#ffb02e;
+  --emerald:#0fe08a;--ruby:#ff2f72;--sapphire:#33b7ff;--cyan:#50e6ff;--purple:#b56cff;
+}
+*{box-sizing:border-box}
+html{background:#070607;scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:"IBM Plex Mono",Consolas,Menlo,monospace;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 18% 0,rgba(255,215,106,.12),transparent 28%),
+    radial-gradient(circle at 82% 10%,rgba(255,47,114,.11),transparent 30%),
+    radial-gradient(circle at 55% 82%,rgba(15,224,138,.09),transparent 28%),
+    linear-gradient(180deg,#09070b,#050607 42%,#07110d 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    linear-gradient(90deg,rgba(255,215,106,.045) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(255,215,106,.032) 1px,transparent 1px);
+  background-size:76px 76px;
+  mask-image:linear-gradient(to bottom,#000,rgba(0,0,0,.38));
+}
+a{color:inherit;text-decoration:none}
+.shell{max-width:1500px;margin:0 auto;padding:24px}
+.hero,.toc,.section,.mini,.formula,.flow,.note{
+  background:linear-gradient(150deg,rgba(13,10,16,.92),rgba(5,12,10,.90));
+  border:1px solid rgba(255,215,106,.18);
+  border-radius:18px;
+  box-shadow:0 18px 55px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.045);
+}
+.hero{
+  position:relative;
+  overflow:hidden;
+  min-height:220px;
+  padding:26px 28px;
+  margin-bottom:16px;
+}
+.hero:before,.section:before{
+  content:"";position:absolute;left:0;right:0;top:0;height:4px;
+  background:linear-gradient(90deg,var(--gold),var(--ruby),var(--emerald),var(--sapphire));
+}
+.hero:after{
+  content:"FORKLARINGER";
+  position:absolute;right:22px;bottom:10px;
+  font-size:clamp(34px,6vw,92px);font-weight:950;letter-spacing:9px;
+  color:rgba(255,215,106,.055);pointer-events:none;
+}
+.eyebrow{font-size:10px;letter-spacing:2.6px;color:var(--gold);font-weight:950;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:clamp(34px,5vw,68px);line-height:.95;margin:0;letter-spacing:2px;text-transform:uppercase}
+.hero p{max-width:880px;color:var(--dim);font-size:12px;line-height:1.8;margin:16px 0 0}
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:22px;max-width:920px}
+.stat{background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:13px 14px}
+.stat .l{font-size:8px;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.stat .v{font-size:22px;color:#fff;font-weight:950;margin-top:4px}
+.toc{padding:16px;margin-bottom:18px;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.toc a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border:1px solid rgba(255,215,106,.16);border-radius:999px;background:rgba(255,215,106,.055);font-size:9px;color:var(--gold);font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.toc a span{color:rgba(255,255,255,.55)}
+.section{position:relative;overflow:hidden;margin:18px 0;padding:22px}
+.section-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;margin-bottom:16px}
+.num{font-size:42px;line-height:1;color:rgba(255,215,106,.24);font-weight:950}
+h2{font-size:24px;line-height:1.15;margin:0;color:#fff;text-transform:uppercase;letter-spacing:1.4px}
+.sub{font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px;max-width:960px}
+.tagrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.tag{border:1px solid rgba(255,215,106,.22);border-radius:999px;background:rgba(255,215,106,.055);padding:5px 9px;font-size:8px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.mini{grid-column:span 4;padding:15px}
+.mini.wide{grid-column:span 6}.mini.full{grid-column:1/-1}
+.mini h3{font-size:12px;color:var(--gold);margin:0 0 10px;text-transform:uppercase;letter-spacing:1.6px}
+.mini p,.mini li{font-size:10px;color:var(--dim);line-height:1.75}
+.mini ul{margin:0;padding-left:16px}.mini li{margin:4px 0}
+.formula{padding:13px 14px;margin-top:10px;background:rgba(0,0,0,.28)}
+.formula b{color:#fff}
+.formula code{display:block;color:var(--gold);font-size:10px;line-height:1.65;white-space:normal}
+.why{border-left:3px solid var(--emerald);padding-left:12px;margin-top:10px;color:#d9ffe9!important}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;padding:12px;margin:12px 0}
+.flow div{background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px}
+.flow b{display:block;color:var(--gold);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.flow span{font-size:9px;color:var(--dim);line-height:1.55}
+.note{padding:14px 16px;margin-top:14px;color:var(--dim);font-size:10px;line-height:1.75;border-color:rgba(80,230,255,.20)}
+.pill-good{color:var(--emerald)}.pill-warn{color:var(--gold)}.pill-risk{color:var(--ruby)}
+@media(max-width:980px){.mini,.mini.wide{grid-column:1/-1}.section-head{grid-template-columns:1fr}.toc{position:relative}.hero:after{display:none}}
+@media(max-width:620px){.shell{padding:14px}.hero,.section{padding:18px}.statrow{grid-template-columns:1fr}h1{font-size:34px}h2{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <section class="hero">
+    <div class="eyebrow">// RS STOCK PRO v1.0 · SYSTEMGENNEMGANG</div>
+    <h1>Forklaringer</h1>
+    <p>Her er en samlet gennemgang af de 8 sider i serveren: hvad hver side bruges til, hvilke undermenuer der findes, hvilke udregninger der ligger bag, og hvorfor netop de signaler er valgt. Siden er skrevet som et arbejds-kort, så du hurtigt kan se forskellen på screening, analyse, breakout, volumen, ETF, marked, AI-infra og portefølje.</p>
+    <div class="statrow">
+      <div class="stat"><div class="l">Sider</div><div class="v">8</div></div>
+      <div class="stat"><div class="l">Scorefamilier</div><div class="v">VQM · VCP · ETF</div></div>
+      <div class="stat"><div class="l">Datakilder</div><div class="v">Yahoo · Finnhub · FRED</div></div>
+      <div class="stat"><div class="l">Formål</div><div class="v">Beslutningsstøtte</div></div>
+    </div>
+  </section>
+
+  <nav class="toc">
+    <div class="toc-grid">
+      <a href="#analyse">Analyse <span>01</span></a>
+      <a href="#screener">Screener <span>02</span></a>
+      <a href="#breakout">Week Breakout <span>03</span></a>
+      <a href="#volume">Volume Scanner <span>04</span></a>
+      <a href="#aiinfra">AIINFRA.SCAN <span>05</span></a>
+      <a href="#market">Market Intel <span>06</span></a>
+      <a href="#etf">ETF SCAN <span>07</span></a>
+      <a href="#portfolio">Portefølje Tracker <span>08</span></a>
+    </div>
+  </nav>
+
+  <section class="section" id="analyse">
+    <div class="section-head">
+      <div>
+        <h2>01 · Analyse</h2>
+        <div class="sub">Enkeltaktie-analyse. Denne side går dybt på én ticker og samler pris, fundamentale nøgletal, momentum, financial health, hype/narrativ, nyheder, earnings og TradingView chart.</div>
+        <div class="tagrow"><span class="tag">Single ticker</span><span class="tag">VQM</span><span class="tag">Financial health</span><span class="tag">Nyheder</span><span class="tag">Earnings</span></div>
+      </div>
+      <div class="num">01</div>
+    </div>
+    <div class="grid">
+      <div class="mini wide"><h3>Undermenuer / moduler</h3><ul><li><b>Søgefelt:</b> ticker indtastes, og serveren henter data fra lokale endpoints.</li><li><b>Hero:</b> viser ticker, selskabsnavn, market cap, P/E, PEG, ROE, beta og samlet vurdering.</li><li><b>Verdict:</b> forklarer om scoren peger mod køb, neutral eller svag case.</li><li><b>Hype score:</b> vurderer sektor/niche/narrativ, så aktier med stærkt tema får synlig kontekst.</li><li><b>VQM scorekort:</b> Value, Quality, Momentum, Revisions, Risk og Catalyst.</li><li><b>Data coverage:</b> viser om felterne er live data, proxy eller missing.</li><li><b>Financial Health:</b> institutionel sundhedsscore med flere regnskabspiller.</li><li><b>Nyheder, earnings og chart:</b> bruges til kontekst, katalysatorer og teknisk overblik.</li></ul></div>
+      <div class="mini wide"><h3>Udregninger</h3><div class="formula"><code><b>VQM Total</b> = 20% Value + 25% Quality + 25% Momentum + 15% Revisions + 10% Risk + 5% Sentiment/Catalyst</code><code><b>Momentum</b> = prisudvikling over 3M, 6M og 12M, justeret for styrke/svaghed.</code><code><b>Financial Health</b> = Piotroski, Altman Z, interest coverage, debt quality, cashflow quality, shareholder health, earnings quality, liquidity og multi-year stability.</code></div><p class="why">Hvorfor valgt: VQM kombinerer værdi, kvalitet og trend. Det gør modellen mere robust end en ren P/E- eller momentum-model, fordi gode aktier ofte kræver flere samtidige bekræftelser.</p></div>
+      <div class="mini full"><h3>Dataflow</h3><div class="flow"><div><b>1. Input</b><span>Ticker skrives ind.</span></div><div><b>2. Data</b><span>Server henter quote, financials, historik, news og earnings.</span></div><div><b>3. Score</b><span>VQM og health beregnes.</span></div><div><b>4. Forklaring</b><span>Styrker, svagheder, konklusion og chart vises.</span></div></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="screener">
+    <div class="section-head"><div><h2>02 · Screener</h2><div class="sub">Scanner mange aktier i et univers og rangerer dem efter samme VQM-logik som Analyse-siden.</div><div class="tagrow"><span class="tag">Universer</span><span class="tag">Batch scan</span><span class="tag">Top 10</span><span class="tag">Tier filter</span></div></div><div class="num">02</div></div>
+    <div class="grid">
+      <div class="mini"><h3>Undermenuer</h3><ul><li><b>Univers:</b> S&P 500 + QQQ, semiconductors, Russell 2000, nuclear, space/defence, AI infra og mega themes.</li><li><b>Batch:</b> styrer hvor mange tickers der hentes ad gangen for at undgå blokering/rate limits.</li><li><b>Top 10:</b> kan skifte mellem Total, Momentum, Value og Quality.</li><li><b>Datatabel:</b> fuld sortérbar tabel med pris, P/E, PEG, ROE, vækst, momentum, score og tier.</li></ul></div>
+      <div class="mini"><h3>Udregning</h3><div class="formula"><code>Samme VQM-formel som Analyse.</code><code>Tier: S ≥ 80 · A ≥ 65 · B ≥ 50 · C ≥ 35 · D &lt; 35</code></div><p class="why">Hvorfor valgt: Screeneren skal finde kandidater hurtigt. Derfor bruges samme scoremodel på tværs af mange tickers, så resultaterne kan sammenlignes direkte.</p></div>
+      <div class="mini"><h3>Hvad du bruger den til</h3><ul><li>Finde de stærkeste aktier i et tema.</li><li>Sortere efter momentum, value eller quality.</li><li>Opdage S- og A-tier kandidater før dybere analyse.</li><li>Eksportere/arbejde videre med tabellen.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="breakout">
+    <div class="section-head"><div><h2>03 · Week Breakout</h2><div class="sub">Teknisk scanner for ugentlige breakout setups. Den kombinerer VCP/CRE-logik med squeeze/katalysator-signaler.</div><div class="tagrow"><span class="tag">Weekly chart</span><span class="tag">VCP/CRE</span><span class="tag">Squeeze</span><span class="tag">RVOL</span></div></div><div class="num">03</div></div>
+    <div class="grid">
+      <div class="mini wide"><h3>Undermenuer</h3><ul><li><b>Scan ticker:</b> analyserer én aktie for breakout.</li><li><b>Univers:</b> breakout universer eller samme universer som Screener.</li><li><b>KPI-række:</b> antal scannet, breakout, setup, top combined, top ticker, avg squeeze, avg RVOL og market.</li><li><b>Topkort:</b> viser de stærkeste setups som kort med score og underkomponenter.</li><li><b>TradingView:</b> ugentlig chart-visning til manuel validering.</li><li><b>Tabel:</b> viser alle under-scorer for hver ticker.</li></ul></div>
+      <div class="mini wide"><h3>Udregning</h3><div class="formula"><code><b>Combined Score</b> = 65% VCP/CRE + 35% Squeeze/Katalysator</code><code><b>VCP/CRE</b> bruger breakout %, relativ volumen, trend, relative strength, VCP, close quality, CRE bonus og risk penalty.</code><code><b>Squeeze</b> bruger volumen-multipel, estimeret short float, call flow, event distance og katalysator.</code></div><p class="why">Hvorfor valgt: Breakouts virker bedst, når pris, volumen og trend bekræfter hinanden. Squeeze-delen tilføjer et eksplosivt risikoelement, men vægtes lavere end selve chart-kvaliteten.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="volume">
+    <div class="section-head"><div><h2>04 · Volume Scanner</h2><div class="sub">Finder aktier med høj daglig volumen og unormalt høj volumen i forhold til normalen.</div><div class="tagrow"><span class="tag">Top 50 volume</span><span class="tag">Volume ratio</span><span class="tag">Datakilder</span><span class="tag">Chart</span></div></div><div class="num">04</div></div>
+    <div class="grid">
+      <div class="mini"><h3>Undermenuer</h3><ul><li><b>Top 50 Volumen:</b> rangerer efter absolut handelsvolumen.</li><li><b>Top 50 Vol Ratio:</b> rangerer efter volumen i forhold til gennemsnit.</li><li><b>Datakilder:</b> Yahoo, Stooq, Massive.com, Finnhub og Tiingo.</li><li><b>Historik:</b> gemmer tidligere scans.</li><li><b>Chart-panel:</b> RSI + ROC, MACD, Bollinger eller clean chart.</li></ul></div>
+      <div class="mini"><h3>Udregning</h3><div class="formula"><code><b>Volume Ratio</b> = dagens volumen / gennemsnitlig volumen</code><code><b>Ekstrem volumen</b> bruges typisk ved ratio over 5x.</code><code><b>Høj volumen</b> bruges typisk ved 2x til 5x.</code></div><p class="why">Hvorfor valgt: Volumen er ofte første tegn på institutionel aktivitet, nyheder eller rotation. Ratio gør små og store aktier mere sammenlignelige.</p></div>
+      <div class="mini"><h3>Hvad du bruger den til</h3><ul><li>Fange usædvanlig aktivitet tidligt.</li><li>Se om volumen bekræfter breakout eller nyhed.</li><li>Sammenligne kilder og rate limits.</li><li>Åbne chart direkte fra scanner-rækken.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="aiinfra">
+    <div class="section-head"><div><h2>05 · AIINFRA.SCAN</h2><div class="sub">Tema-side for AI-infrastruktur: compute, netværk, strøm, køling, datacentre, konstruktion og nuklear/energi.</div><div class="tagrow"><span class="tag">AI infra</span><span class="tag">Tier score</span><span class="tag">AI-søgning</span><span class="tag">Live priser</span></div></div><div class="num">05</div></div>
+    <div class="grid">
+      <div class="mini wide"><h3>Undermenuer</h3><ul><li><b>Makro:</b> store nøgletal for AI capex, datacenter-strøm, chipmarked og backlog.</li><li><b>Stakken:</b> de 5 lag: compute, netværk, strøm/energi, køling/faciliteter og konstruktion/kapital.</li><li><b>Tier Score:</b> hovedlisten med ticker, kategori, score, tier, momentum, live pris og AI infra case.</li><li><b>Udregninger:</b> forklarer nøgleantagelser bag temaet.</li><li><b>Tier rangordning:</b> samlet sortering efter score/tier.</li><li><b>AI-søgning:</b> finder og tilføjer nye AI/infra tickers.</li></ul></div>
+      <div class="mini wide"><h3>Udregning</h3><div class="formula"><code><b>AI Infra Score</b> = temaeksponering + momentum + kategori-kvalitet + live data justering + AI case.</code><code><b>Tier</b> oversætter score til S/A/B/C/D, så listen kan scannes hurtigt.</code><code><b>AI case</b> er en kort begrundelse for, hvorfor aktien hører til i AI-infrastruktur-universet.</code></div><p class="why">Hvorfor valgt: AI-infrastruktur er et flerårigt tema, hvor de største vindere ikke kun er chips. Strøm, grid, køling og byggeri kan være lige så vigtige flaskehalse.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="market">
+    <div class="section-head"><div><h2>06 · Market Intel</h2><div class="sub">Makro- og markedsintelligensside med Finnhub-baserede earnings, sektor/makro, korrelation og squeeze-overvågning.</div><div class="tagrow"><span class="tag">Earnings</span><span class="tag">Macro</span><span class="tag">Correlation</span><span class="tag">Squeeze</span></div></div><div class="num">06</div></div>
+    <div class="grid">
+      <div class="mini"><h3>Undermenuer</h3><ul><li><b>Earnings:</b> kommende rapporter, estimater og surprise.</li><li><b>Macro:</b> makrobegivenheder og mulig markedsretning.</li><li><b>Correlation:</b> sektor/ETF-korrelationer.</li><li><b>Squeeze:</b> short float, volumen, call flow, katalysator og lokal setup-analyse.</li></ul></div>
+      <div class="mini"><h3>Udregning</h3><div class="formula"><code><b>Earnings surprise</b> = (actual - estimate) / abs(estimate)</code><code><b>Correlation</b> måler om aktiver bevæger sig sammen eller mod hinanden.</code><code><b>Squeeze score</b> kombinerer short, volumen, call flow og katalysatorafstand.</code></div><p class="why">Hvorfor valgt: En aktie kan se stærk ud alene, men marked, sektor, earnings og event-risiko bestemmer ofte timingen.</p></div>
+      <div class="mini"><h3>Datakilder</h3><ul><li>Finnhub til earnings, profiler og enkelte markedssignaler.</li><li>Yahoo/ETF-priser til sektor- og chartkontekst.</li><li>Lokale katalysatorlister hvor data ikke findes direkte.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="etf">
+    <div class="section-head"><div><h2>07 · ETF SCAN</h2><div class="sub">ETF-analyse med holdings, sektorer, lande, Hype Score, diversificering og Yahoo/justETF/provider datafallbacks.</div><div class="tagrow"><span class="tag">ETF search</span><span class="tag">Holdings</span><span class="tag">Diversificering</span><span class="tag">Hype score</span></div></div><div class="num">07</div></div>
+    <div class="grid">
+      <div class="mini wide"><h3>Undermenuer</h3><ul><li><b>Søgning:</b> ticker/ISIN/navn med forslag og populære ETF'er.</li><li><b>Hero:</b> pris, ændring, score og basisinformation.</li><li><b>Fordeling:</b> sektor-, lande- og asset allocation.</li><li><b>Holdings:</b> underliggende aktier med vægt og individuelle hype scores.</li><li><b>Charts / tabs:</b> fordeling, holdings, nyheder og detaljer afhængigt af data.</li></ul></div>
+      <div class="mini wide"><h3>Udregninger</h3><div class="formula"><code><b>Holding Hype</b> = momentum + position i 52W range + størrelse/market cap</code><code><b>ETF Hype</b> = vægtet gennemsnit af holdings' hypeScore</code><code><b>Diversificering</b> = HHI-del + antal holdings + top-5 koncentration + antal sektorer</code></div><p class="why">Hvorfor valgt: ETF'er skal ikke kun vurderes på pris. Risikoen ligger ofte i koncentration, sektorvægt, landeeksponering og om top-holdings reelt driver temaet.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="portfolio">
+    <div class="section-head"><div><h2>08 · Portefølje Tracker</h2><div class="sub">Tracker kendte investorer, transaktioner og live-opdateringer, så du kan se hvem der køber/sælger hvad, og hvordan positioner ændrer sig.</div><div class="tagrow"><span class="tag">Oversigt</span><span class="tag">Transaktioner</span><span class="tag">Investor scan</span><span class="tag">Live kørsel</span></div></div><div class="num">08</div></div>
+    <div class="grid">
+      <div class="mini"><h3>Undermenuer</h3><ul><li><b>Oversigt:</b> investorer, AUM, antal transaktioner og aktuelle holdings.</li><li><b>Transaktioner:</b> filtrer/sortér køb, salg og ændringer.</li><li><b>Investor scan:</b> finder nye investorer eller supplerende data.</li><li><b>Live kørsel:</b> opdaterer udvalgte investorer med ny data.</li><li><b>Chart:</b> TradingView/Finnhub prisdata for valgte tickers.</li></ul></div>
+      <div class="mini"><h3>Udregning</h3><div class="formula"><code><b>Position value</b> = antal aktier × aktuel/estimeret pris</code><code><b>Ændring</b> = ny position - tidligere position</code><code><b>AUM total</b> = summeret værdi på investorens kendte positioner</code></div><p class="why">Hvorfor valgt: Store investorers handlinger er ikke købssignaler alene, men de kan vise institutionel interesse, sektorskift og langsigtede temaer.</p></div>
+      <div class="mini"><h3>Brug</h3><ul><li>Se om en ticker går igen hos flere investorer.</li><li>Fange nye temaer via store positionsændringer.</li><li>Koble investor-flow med Analyse, Screener og Volume Scanner.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="note">
+    <b style="color:var(--gold)">Vigtigt:</b> Alle sider er beslutningsstøtte og ikke finansiel rådgivning. Scores er modeller og proxyer, ikke facit. Den stærkeste brug er at kombinere flere sider: først Screener/AIINFRA/ETF SCAN for idéer, derefter Analyse for dybde, Week Breakout/Volume for timing, Market Intel for makro/event-risiko og Portefølje Tracker for institutionel kontekst.
+  </section>
+</div>
+</body>
+</html>
