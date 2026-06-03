@@ -46,6 +46,10 @@ from the examples:
 
 Runtime files
 -------------
-The app will recreate cache files, scan-state.json content and SQLite runtime
-files as it runs. For persistent hosting, use a platform with persistent disk if
-you want saved keys, scan history and cache to survive restarts.
+This package includes the current scan-state.json from the local app so the
+Screener and Week Breakout pages start with the same saved rows as your local
+version.
+
+The app will recreate cache files and SQLite runtime files as it runs. For
+persistent hosting, use a platform with persistent disk if you want saved keys,
+scan history and cache to survive restarts.
