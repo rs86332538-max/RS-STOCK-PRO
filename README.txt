@@ -1,47 +1,55 @@
-STOCK PRO 10X · VQM7776 · MULTI-YEAR ENGINE V3 + WEEK BREAKOUT SCANNER
-============================================================================
+STOCKINTEL PRO ETF - WEBSITE PACKAGE
+====================================
 
-Port: 7722
-Åbn: http://localhost:7722/
+This zip is a deploy-ready copy of the local app. The original folder and the
+original local server address were not changed.
 
-START
------
+Local start
+-----------
 Windows:
   start_windows.bat
 
 Mac / Linux:
   sh start_mac_linux.sh
 
-NYT
----
-- Ny fane: WEEK BREAKOUT
-- Manual ticker-scan via samme lokale server
-- Universe scan for Momentum / AI Infra / Small-Mid Momentum / Semiconductor / All
-- Breakout Score: 30% Breakout, 25% Volume, 20% Trend, 15% Relative Strength, 10% VCP
-- Close Strength, Closing Range Expansion og Risk Penalties
-- TradingView weekly chart med ROC + RSI når du klikker på en ticker
+Local address:
+  http://localhost:7722/
 
-Bemærk: Serveren bruger gratis Yahoo Finance data og TradingView embed i browseren.
-Ikke finansiel rådgivning.
+Website hosting
+---------------
+This app is not a static HTML-only site. It needs the Python backend because the
+HTML pages call /api/... endpoints for scans, ETF lookup, AI infra data and
+MarketPulse.
 
+The package includes common hosting files:
+  requirements.txt
+  Procfile
+  runtime.txt
+  Dockerfile
+  render.yaml
 
-OPDATERING — WEEK BREAKOUT SCANNER
-----------------------------------
-Breakout-siden har nu samme univers-valg som STOCK PRO Screener:
-S&P 500 + QQQ, Semiconductor, Russell 2000, Nuclear, Space/Defence/Aerospace/Robotics, AI Data/Power/Infra, All Mega Themes, Small Caps og All Screener Universes.
-Server: http://localhost:7722/
+On Render/Railway/Fly/etc. use:
+  Build command: pip install -r requirements.txt
+  Start command: python server.py
 
+The server reads the PORT environment variable supplied by the host and binds to
+HOST=0.0.0.0 for public web hosting. If PORT is not supplied, it still uses 7722
+locally.
 
-SMALL CAPS FIX
---------------
-- Small Caps forsøger nu at hente op til 1000 tickers via Nasdaq + Yahoo + Finviz.
-- Batch cap hævet til 250, så frontend-batches på 200 ikke bliver halveret til 100.
-- Hvis eksterne kilder blokeres, falder serveren tilbage til lokal fallback-liste.
-
-
-FIX v10.4
+API keys
 --------
-- Screener og Week Breakout bruger nu to separate universe-datastrukturer.
-- Screener bruger stadig /api/universe og /api/smallcaps.
-- Week Breakout bruger /api/breakout-tickers med separat lokal universe-map.
-- Small Caps i Week Breakout kan scanne op til 1000 fra den separate Russell/small-cap liste.
+Your real .keys.json and api_keys.json files were intentionally not included in
+this zip. Use the in-app key settings after deployment, or create these files
+from the examples:
+  .keys.example.json
+  api_keys.example.json
+
+Runtime files
+-------------
+This package includes the current scan-state.json from the local app so the
+Screener and Week Breakout pages start with the same saved rows as your local
+version.
+
+The app will recreate cache files and SQLite runtime files as it runs. For
+persistent hosting, use a platform with persistent disk if you want saved keys,
+scan history and cache to survive restarts.
